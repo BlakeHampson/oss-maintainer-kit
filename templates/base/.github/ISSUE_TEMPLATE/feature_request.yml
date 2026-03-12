@@ -1,0 +1,29 @@
+name: Feature request
+description: Suggest an improvement with clear maintainer or user value.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: What pain point or workflow gap are you seeing?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed approach
+      description: Describe the change you want.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What else could solve this?
+  - type: textarea
+    id: success
+    attributes:
+      label: What would success look like?

@@ -1,0 +1,26 @@
+{
+  "name": "oss-maintainer-kit",
+  "version": "0.1.0",
+  "description": "Bootstrap Codex-ready maintainer workflows for open-source repositories.",
+  "type": "module",
+  "bin": {
+    "maintainer-kit": "./bin/maintainer-kit.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node --test"
+  },
+  "keywords": [
+    "open-source",
+    "maintainers",
+    "github-actions",
+    "codex",
+    "agents-md",
+    "automation"
+  ],
+  "author": "Blake Hampson",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
+}

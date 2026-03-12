@@ -1,0 +1,88 @@
+name: Codex release prep
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version you are preparing
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  release_prep:
+    runs-on: ubuntu-latest
+    outputs:
+      final_message: ${{ steps.run_codex.outputs.final-message }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Build release context
+        run: |
+          git fetch --tags --force
+          LAST_TAG="$(git describe --tags --abbrev=0 2>/dev/null || echo none)"
+          {
+            echo "You are helping __MAINTAINER_NAME__ prepare a release for __PROJECT_NAME__."
+            echo "Produce:"
+            echo "1. a short release summary"
+            echo "2. a list of user-facing changes"
+            echo "3. a maintainer checklist before shipping"
+            echo "4. any obvious risks or follow-up items"
+            echo
+            echo "Repository: __PROJECT_NAME__"
+            echo "Target version: ${{ github.event.inputs.version }}"
+            echo "Last tag: ${LAST_TAG}"
+            echo
+            echo "Recent commits:"
+            if [ "${LAST_TAG}" = "none" ]; then
+              git log --oneline --decorate -20
+            else
+              git log --oneline --decorate "${LAST_TAG}..HEAD"
+            fi
+            echo
+            echo "Current changelog:"
+            if [ -f CHANGELOG.md ]; then
+              sed -n '1,220p' CHANGELOG.md
+            else
+              echo "No CHANGELOG.md found."
+            fi
+          } > release-prompt.txt
+
+      - name: Run Codex release prep
+        id: run_codex
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: release-prompt.txt
+          codex-args: '["--quiet"]'
+          output-file: release-plan.md
+
+      - name: Upload release plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: codex-release-plan
+          path: release-plan.md
+
+  open_issue:
+    runs-on: ubuntu-latest
+    needs: release_prep
+    if: needs.release_prep.outputs.final_message != ''
+    steps:
+      - name: Create release prep issue
+        uses: actions/github-script@v7
+        env:
+          CODEX_FINAL_MESSAGE: ${{ needs.release_prep.outputs.final_message }}
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Release prep: ${context.payload.inputs.version}`,
+              body: process.env.CODEX_FINAL_MESSAGE,
+            });
