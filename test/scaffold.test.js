@@ -77,3 +77,24 @@ test("initKit skips existing files unless force is set", async () => {
 
   assert.notEqual(await readFile(agentsPath, "utf8"), "custom content");
 });
+
+test("initKit dry-run previews files without writing them", async () => {
+  const targetDir = await mkdtemp(path.join(os.tmpdir(), "oss-maintainer-kit-"));
+  const previewTarget = path.join(targetDir, "preview-repo");
+
+  const result = await initKit({
+    dryRun: true,
+    maintainerName: "Jane Doe",
+    repoName: "demo-repo",
+    targetDir: previewTarget,
+  });
+
+  assert.ok(result.created.includes("AGENTS.md"));
+
+  try {
+    await readFile(path.join(previewTarget, "AGENTS.md"), "utf8");
+    assert.fail("dry-run should not write files");
+  } catch (error) {
+    assert.equal(error.code, "ENOENT");
+  }
+});

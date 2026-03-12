@@ -24,6 +24,11 @@ node ./bin/maintainer-kit.js init ../my-repo \
 ```
 
 By default, existing files are left untouched. Add `--force` if you want to overwrite matching files.
+Add `--dry-run` to preview the generated file set before writing anything.
+
+```bash
+node ./bin/maintainer-kit.js init ../my-repo --dry-run
+```
 
 ## What gets added
 
@@ -55,6 +60,12 @@ Run tests:
 
 ```bash
 npm test
+```
+
+Smoke check the CLI:
+
+```bash
+node ./bin/maintainer-kit.js init ../example-repo --dry-run
 ```
 
 ## Recommended repo setup after scaffolding

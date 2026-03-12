@@ -11,17 +11,19 @@ export function usage() {
   return `OSS Maintainer Kit
 
 Usage:
-  maintainer-kit init [target-directory] [--repo-name name] [--maintainer "Name"] [--force]
+  maintainer-kit init [target-directory] [--repo-name name] [--maintainer "Name"] [--force] [--dry-run]
 
 Examples:
   maintainer-kit init .
   maintainer-kit init ../my-repo --repo-name my-repo --maintainer "Jane Doe"
+  maintainer-kit init ../my-repo --dry-run
 `;
 }
 
 export function parseCliArgs(argv) {
   const result = {
     command: argv[0],
+    dryRun: false,
     force: false,
     help: false,
     maintainerName: undefined,
@@ -41,6 +43,11 @@ export function parseCliArgs(argv) {
 
     if (value === "--force") {
       result.force = true;
+      continue;
+    }
+
+    if (value === "--dry-run") {
+      result.dryRun = true;
       continue;
     }
 
@@ -99,11 +106,14 @@ async function copyTemplateDirectory({
   created,
   currentSource,
   currentTarget,
+  dryRun,
   force,
   skipped,
   tokens,
 }) {
-  await mkdir(currentTarget, { recursive: true });
+  if (!dryRun) {
+    await mkdir(currentTarget, { recursive: true });
+  }
   const entries = await readdir(currentSource, { withFileTypes: true });
 
   for (const entry of entries) {
@@ -116,6 +126,7 @@ async function copyTemplateDirectory({
         created,
         currentSource: sourcePath,
         currentTarget: targetPath,
+        dryRun,
         force,
         skipped,
         tokens,
@@ -130,13 +141,18 @@ async function copyTemplateDirectory({
 
     const rawContent = await readFile(sourcePath, "utf8");
     const rendered = replaceTokens(rawContent, tokens);
-    await mkdir(path.dirname(targetPath), { recursive: true });
-    await writeFile(targetPath, rendered, "utf8");
+
+    if (!dryRun) {
+      await mkdir(path.dirname(targetPath), { recursive: true });
+      await writeFile(targetPath, rendered, "utf8");
+    }
+
     created.push(path.relative(baseTarget, targetPath));
   }
 }
 
 export async function initKit({
+  dryRun = false,
   force = false,
   maintainerName,
   repoName,
@@ -150,13 +166,16 @@ export async function initKit({
     "__PROJECT_NAME__": repoName,
   };
 
-  await mkdir(targetDir, { recursive: true });
+  if (!dryRun) {
+    await mkdir(targetDir, { recursive: true });
+  }
 
   await copyTemplateDirectory({
     baseTarget: targetDir,
     created,
     currentSource: templateRoot,
     currentTarget: targetDir,
+    dryRun,
     force,
     skipped,
     tokens,

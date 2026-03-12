@@ -22,15 +22,26 @@ async function main() {
   const maintainerName = args.maintainerName ?? "Primary Maintainer";
 
   const result = await initKit({
+    dryRun: args.dryRun,
     force: args.force,
     maintainerName,
     repoName,
     targetDir,
   });
 
-  console.log(`Initialized OSS Maintainer Kit in ${targetDir}`);
-  console.log(`Created: ${result.created.length}`);
+  console.log(
+    `${args.dryRun ? "Previewed" : "Initialized"} OSS Maintainer Kit in ${targetDir}`,
+  );
+  console.log(`${args.dryRun ? "Would create" : "Created"}: ${result.created.length}`);
   console.log(`Skipped: ${result.skipped.length}`);
+
+  if (result.created.length > 0) {
+    console.log("");
+    console.log(args.dryRun ? "Files that would be created:" : "Files created:");
+    for (const entry of result.created) {
+      console.log(`- ${entry}`);
+    }
+  }
 
   if (result.skipped.length > 0) {
     console.log("");
