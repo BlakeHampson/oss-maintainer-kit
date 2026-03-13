@@ -113,6 +113,15 @@ If you want a concrete generated repo to inspect, start with one of these:
 4. Commit the generated files.
 5. Decide later whether you want the optional OpenAI-powered GitHub Actions.
 
+## Adoption snapshots
+
+This kit is already being used in two different ways:
+
+- Public examples: there are live example repos for `first-public-repo`, `javascript-library`, `python-package`, and `docs-heavy`, so you can inspect the generated files instead of guessing what a preset does.
+- Private security-sensitive repo: `ShuleDocs`, a secure Microsoft Office add-in project, is using the kit for maintainer onboarding, repo-specific `AGENTS.md` guidance, and GitHub issue and pull request templates without enabling the optional Codex Actions by default.
+
+That split is intentional. The same kit should be useful for a beginner opening a repo to contributors and for a more security-sensitive project that wants better review discipline without immediately adding more automation.
+
 ## Optional AI workflows
 
 The included GitHub Actions are based on OpenAI's official docs and the `openai/codex-action` repository. They are optional:

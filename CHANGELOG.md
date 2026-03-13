@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.2 - 2026-03-13
+
+- add an adoption snapshot section to the main README
+- document the live example repos more clearly for first-time users
+- use the kit on the private `ShuleDocs` repo for maintainer onboarding, review guidance, and issue or pull request templates
+
 ## 0.3.1 - 2026-03-13
 
 - link all live preset example repositories from the main README
