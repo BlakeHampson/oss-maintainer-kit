@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0 - 2026-03-13
+
+- add `javascript-library`, `python-package`, and `docs-heavy` presets
+- add a generated quick-start GIF for the README
+- add a render script for regenerating the demo asset
+- publish an example repo generated from the `first-public-repo` preset
+
 ## 0.1.1 - 2026-03-13
 
 - add a beginner-first README and `docs/START_HERE.md`

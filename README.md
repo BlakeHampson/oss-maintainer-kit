@@ -56,6 +56,10 @@ OSS Maintainer Kit gives you the minimum useful structure without forcing a gian
 
 ## Quick start
 
+See the CLI flow first:
+
+![Quick start demo](docs/assets/quickstart-demo.gif)
+
 Try it without cloning anything:
 
 ```bash
@@ -87,6 +91,8 @@ Then open `docs/START_HERE.md` in the generated repo. That is the fastest path t
 
 If you want the full starter, omit `--preset` or set `--preset base`.
 
+If you want a concrete generated repo to inspect, see [oss-maintainer-kit-example](https://github.com/BlakeHampson/oss-maintainer-kit-example).
+
 ## Suggested first hour after setup
 
 1. Read `docs/START_HERE.md`.
@@ -108,8 +114,13 @@ If you already use built-in Codex GitHub reviews, you may not want the pull requ
 
 ## Presets
 
-- `first-public-repo`: recommended if you are opening up a repo for the first time or mostly working solo
-- `base`: full starter with both optional Codex workflows
+| Preset | Best for | What changes |
+| --- | --- | --- |
+| `first-public-repo` | first-time public repos and solo builders | leaves out release-prep automation by default |
+| `base` | general-purpose repos | includes both optional Codex workflows |
+| `javascript-library` | JavaScript and TypeScript packages | adds package-focused review guidance and docs |
+| `python-package` | Python packages and tools | adds packaging and environment-focused guidance |
+| `docs-heavy` | docs, guides, and content-heavy repos | adds accuracy, examples, and structure-focused guidance |
 
 The `first-public-repo` preset intentionally leaves out release-prep automation. Most new repos do not need it yet.
 

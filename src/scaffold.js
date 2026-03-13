@@ -24,6 +24,33 @@ export const presets = {
       path.resolve(templatesRoot, "presets", "first-public-repo"),
     ],
   },
+  "javascript-library": {
+    description:
+      "Starter for JavaScript or TypeScript packages where API stability, docs, and publish safety matter.",
+    excludedPaths: [],
+    templateRoots: [
+      templateRoot,
+      path.resolve(templatesRoot, "presets", "javascript-library"),
+    ],
+  },
+  "python-package": {
+    description:
+      "Starter for Python packages with guidance around packaging, tests, examples, and release safety.",
+    excludedPaths: [],
+    templateRoots: [
+      templateRoot,
+      path.resolve(templatesRoot, "presets", "python-package"),
+    ],
+  },
+  "docs-heavy": {
+    description:
+      "Starter for repositories where written guidance, examples, and contributor clarity matter more than app code.",
+    excludedPaths: [],
+    templateRoots: [
+      templateRoot,
+      path.resolve(templatesRoot, "presets", "docs-heavy"),
+    ],
+  },
 };
 
 function formatPresetList() {

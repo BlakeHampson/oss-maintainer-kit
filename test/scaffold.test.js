@@ -45,6 +45,9 @@ test("replaceTokens replaces all supported placeholders", () => {
 test("usage and explainKit describe the beginner path", () => {
   assert.match(usage(), /maintainer-kit explain/);
   assert.match(usage(), /first-public-repo/);
+  assert.match(usage(), /javascript-library/);
+  assert.match(usage(), /python-package/);
+  assert.match(usage(), /docs-heavy/);
   assert.match(explainKit(), /docs\/START_HERE\.md/);
 });
 
@@ -129,4 +132,49 @@ test("first-public-repo preset leaves out the release workflow", async () => {
 
   assert.ok(result.created.includes(".github/workflows/codex-pr-review.yml"));
   assert.ok(!result.created.includes(".github/workflows/codex-release-prep.yml"));
+});
+
+test("javascript-library preset injects package-specific review guidance", async () => {
+  const targetDir = await mkdtemp(path.join(os.tmpdir(), "oss-maintainer-kit-"));
+
+  await initKit({
+    maintainerName: "Jane Doe",
+    preset: "javascript-library",
+    repoName: "demo-repo",
+    targetDir,
+  });
+
+  const agents = await readFile(path.join(targetDir, "AGENTS.md"), "utf8");
+  assert.match(agents, /JavaScript or TypeScript package/);
+  assert.match(agents, /CommonJS or ESM consumers/);
+});
+
+test("python-package preset injects packaging guidance", async () => {
+  const targetDir = await mkdtemp(path.join(os.tmpdir(), "oss-maintainer-kit-"));
+
+  await initKit({
+    maintainerName: "Jane Doe",
+    preset: "python-package",
+    repoName: "demo-repo",
+    targetDir,
+  });
+
+  const agents = await readFile(path.join(targetDir, "AGENTS.md"), "utf8");
+  assert.match(agents, /Python package/);
+  assert.match(agents, /import path changes/);
+});
+
+test("docs-heavy preset injects docs-first guidance", async () => {
+  const targetDir = await mkdtemp(path.join(os.tmpdir(), "oss-maintainer-kit-"));
+
+  await initKit({
+    maintainerName: "Jane Doe",
+    preset: "docs-heavy",
+    repoName: "demo-repo",
+    targetDir,
+  });
+
+  const agents = await readFile(path.join(targetDir, "AGENTS.md"), "utf8");
+  assert.match(agents, /docs-heavy repository/);
+  assert.match(agents, /Broken links, misleading examples/);
 });
