@@ -30,6 +30,7 @@ async function main() {
     dryRun: args.dryRun,
     force: args.force,
     maintainerName,
+    preset: args.preset,
     repoName,
     targetDir,
   });
@@ -37,6 +38,7 @@ async function main() {
   console.log(
     `${args.dryRun ? "Previewed" : "Initialized"} OSS Maintainer Kit in ${targetDir}`,
   );
+  console.log(`Preset: ${args.preset}`);
   console.log(`${args.dryRun ? "Would create" : "Created"}: ${result.created.length}`);
   console.log(`Skipped: ${result.skipped.length}`);
 

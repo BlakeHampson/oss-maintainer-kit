@@ -5,7 +5,47 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const templateRoot = path.resolve(__dirname, "..", "templates", "base");
+const templatesRoot = path.resolve(__dirname, "..", "templates");
+export const templateRoot = path.resolve(templatesRoot, "base");
+
+export const presets = {
+  base: {
+    description: "Full starter with issue templates, PR template, and both optional Codex workflows.",
+    excludedPaths: [],
+    templateRoots: [templateRoot],
+  },
+  "first-public-repo": {
+    description:
+      "Lighter starter for a newly public or solo-built repo. Keeps the review workflow, leaves out release prep.",
+    excludedPaths: [".github/workflows/codex-release-prep.yml"],
+    templateRoots: [
+      templateRoot,
+      path.resolve(templatesRoot, "presets", "first-public-repo"),
+    ],
+  },
+};
+
+function formatPresetList() {
+  return Object.entries(presets)
+    .map(([name, config]) => `  - ${name}: ${config.description}`)
+    .join("\n");
+}
+
+function getPresetConfig(presetName) {
+  const preset = presets[presetName];
+
+  if (!preset) {
+    throw new Error(
+      `Unknown preset: ${presetName}\n\nAvailable presets:\n${formatPresetList()}`,
+    );
+  }
+
+  return preset;
+}
+
+function normalizeRelativePath(relativePath) {
+  return relativePath.split(path.sep).join("/");
+}
 
 export function usage() {
   return `OSS Maintainer Kit
@@ -15,11 +55,15 @@ explain, and contribute to.
 
 Usage:
   maintainer-kit explain
-  maintainer-kit init [target-directory] [--repo-name name] [--maintainer "Name"] [--force] [--dry-run]
+  maintainer-kit init [target-directory] [--repo-name name] [--maintainer "Name"] [--preset name] [--force] [--dry-run]
+
+Presets:
+${formatPresetList()}
 
 Examples:
   maintainer-kit explain
   maintainer-kit init .
+  maintainer-kit init ../my-repo --preset first-public-repo --dry-run
   maintainer-kit init ../my-repo --repo-name my-repo --maintainer "Jane Doe"
   maintainer-kit init ../my-repo --dry-run
 `;
@@ -37,14 +81,17 @@ What it adds:
 - codex-pr-review.yml: an optional GitHub Action that asks Codex to review pull requests
 - codex-release-prep.yml: an optional GitHub Action that drafts release notes and a checklist
 
+Presets:
+${formatPresetList()}
+
 What it does not do:
 - it does not change your application code
 - it does not force you to use every workflow
 - it does not replace tests or human judgment
 
 If you are new to GitHub or open source, start with:
-1. maintainer-kit init ../my-repo --dry-run
-2. maintainer-kit init ../my-repo --repo-name my-repo --maintainer "Your Name"
+1. maintainer-kit init ../my-repo --preset first-public-repo --dry-run
+2. maintainer-kit init ../my-repo --repo-name my-repo --maintainer "Your Name" --preset first-public-repo
 3. open docs/START_HERE.md in the generated repo
 
 You can safely ignore the release workflow until you actually start shipping versions.
@@ -58,6 +105,7 @@ export function parseCliArgs(argv) {
     force: false,
     help: false,
     maintainerName: undefined,
+    preset: "base",
     repoName: undefined,
     targetDir: undefined,
   };
@@ -107,6 +155,15 @@ export function parseCliArgs(argv) {
       continue;
     }
 
+    if (value === "--preset") {
+      if (!argv[index + 1]) {
+        throw new Error("--preset requires a value");
+      }
+      result.preset = argv[index + 1];
+      index += 1;
+      continue;
+    }
+
     if (value.startsWith("--")) {
       throw new Error(`Unknown option: ${value}`);
     }
@@ -144,7 +201,9 @@ async function copyTemplateDirectory({
   created,
   currentSource,
   currentTarget,
+  createdSet,
   dryRun,
+  excludedPaths,
   force,
   skipped,
   tokens,
@@ -157,6 +216,11 @@ async function copyTemplateDirectory({
   for (const entry of entries) {
     const sourcePath = path.join(currentSource, entry.name);
     const targetPath = path.join(currentTarget, entry.name);
+    const relativeTargetPath = normalizeRelativePath(path.relative(baseTarget, targetPath));
+
+    if (excludedPaths.has(relativeTargetPath)) {
+      continue;
+    }
 
     if (entry.isDirectory()) {
       await copyTemplateDirectory({
@@ -164,7 +228,9 @@ async function copyTemplateDirectory({
         created,
         currentSource: sourcePath,
         currentTarget: targetPath,
+        createdSet,
         dryRun,
+        excludedPaths,
         force,
         skipped,
         tokens,
@@ -172,8 +238,10 @@ async function copyTemplateDirectory({
       continue;
     }
 
-    if (!force && (await pathExists(targetPath))) {
-      skipped.push(path.relative(baseTarget, targetPath));
+    const alreadyCreatedInRun = createdSet.has(relativeTargetPath);
+
+    if (!alreadyCreatedInRun && !force && (await pathExists(targetPath))) {
+      skipped.push(relativeTargetPath);
       continue;
     }
 
@@ -185,7 +253,10 @@ async function copyTemplateDirectory({
       await writeFile(targetPath, rendered, "utf8");
     }
 
-    created.push(path.relative(baseTarget, targetPath));
+    if (!alreadyCreatedInRun) {
+      created.push(relativeTargetPath);
+      createdSet.add(relativeTargetPath);
+    }
   }
 }
 
@@ -193,11 +264,14 @@ export async function initKit({
   dryRun = false,
   force = false,
   maintainerName,
+  preset = "base",
   repoName,
   targetDir,
 }) {
   const created = [];
+  const createdSet = new Set();
   const skipped = [];
+  const presetConfig = getPresetConfig(preset);
 
   const tokens = {
     "__MAINTAINER_NAME__": maintainerName,
@@ -208,16 +282,20 @@ export async function initKit({
     await mkdir(targetDir, { recursive: true });
   }
 
-  await copyTemplateDirectory({
-    baseTarget: targetDir,
-    created,
-    currentSource: templateRoot,
-    currentTarget: targetDir,
-    dryRun,
-    force,
-    skipped,
-    tokens,
-  });
+  for (const currentTemplateRoot of presetConfig.templateRoots) {
+    await copyTemplateDirectory({
+      baseTarget: targetDir,
+      created,
+      currentSource: currentTemplateRoot,
+      currentTarget: targetDir,
+      createdSet,
+      dryRun,
+      excludedPaths: new Set(presetConfig.excludedPaths),
+      force,
+      skipped,
+      tokens,
+    });
+  }
 
   return { created, skipped };
 }

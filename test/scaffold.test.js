@@ -14,6 +14,8 @@ test("parseCliArgs handles init flags", () => {
     "demo-repo",
     "--maintainer",
     "Jane Doe",
+    "--preset",
+    "first-public-repo",
     "--force",
   ]);
 
@@ -21,6 +23,7 @@ test("parseCliArgs handles init flags", () => {
   assert.equal(parsed.targetDir, "../repo");
   assert.equal(parsed.repoName, "demo-repo");
   assert.equal(parsed.maintainerName, "Jane Doe");
+  assert.equal(parsed.preset, "first-public-repo");
   assert.equal(parsed.force, true);
 });
 
@@ -41,6 +44,7 @@ test("replaceTokens replaces all supported placeholders", () => {
 
 test("usage and explainKit describe the beginner path", () => {
   assert.match(usage(), /maintainer-kit explain/);
+  assert.match(usage(), /first-public-repo/);
   assert.match(explainKit(), /docs\/START_HERE\.md/);
 });
 
@@ -109,4 +113,20 @@ test("initKit dry-run previews files without writing them", async () => {
   } catch (error) {
     assert.equal(error.code, "ENOENT");
   }
+});
+
+test("first-public-repo preset leaves out the release workflow", async () => {
+  const targetDir = await mkdtemp(path.join(os.tmpdir(), "oss-maintainer-kit-"));
+  const previewTarget = path.join(targetDir, "preview-repo");
+
+  const result = await initKit({
+    dryRun: true,
+    maintainerName: "Jane Doe",
+    preset: "first-public-repo",
+    repoName: "demo-repo",
+    targetDir: previewTarget,
+  });
+
+  assert.ok(result.created.includes(".github/workflows/codex-pr-review.yml"));
+  assert.ok(!result.created.includes(".github/workflows/codex-release-prep.yml"));
 });

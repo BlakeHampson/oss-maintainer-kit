@@ -1,14 +1,30 @@
 {
   "name": "oss-maintainer-kit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Turn a code repository into a contributor-friendly public project with clear GitHub workflows.",
   "type": "module",
   "bin": {
     "maintainer-kit": "./bin/maintainer-kit.js"
   },
+  "files": [
+    "bin",
+    "src",
+    "templates",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "test": "node --test",
-    "check": "node --test"
+    "check": "node --test",
+    "pack:check": "npm pack --dry-run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BlakeHampson/oss-maintainer-kit.git"
+  },
+  "homepage": "https://github.com/BlakeHampson/oss-maintainer-kit#readme",
+  "bugs": {
+    "url": "https://github.com/BlakeHampson/oss-maintainer-kit/issues"
   },
   "keywords": [
     "open-source",
@@ -22,6 +38,9 @@
   ],
   "author": "Blake Hampson",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
     "node": ">=18"
   }

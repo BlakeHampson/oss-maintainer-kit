@@ -56,34 +56,36 @@ OSS Maintainer Kit gives you the minimum useful structure without forcing a gian
 
 ## Quick start
 
-Clone this repository and use the CLI locally:
+Try it without cloning anything:
 
 ```bash
-git clone https://github.com/BlakeHampson/oss-maintainer-kit.git
-cd oss-maintainer-kit
-node ./bin/maintainer-kit.js explain
+npx oss-maintainer-kit explain
 ```
 
-Preview the files before writing anything:
+If this is your first public repo, start with the lighter preset and preview the files before writing anything:
 
 ```bash
-node ./bin/maintainer-kit.js init ../my-repo \
+npx oss-maintainer-kit init ../my-repo \
   --repo-name my-repo \
   --maintainer "Your Name" \
+  --preset first-public-repo \
   --dry-run
 ```
 
 If the preview looks right, apply it:
 
 ```bash
-node ./bin/maintainer-kit.js init ../my-repo \
+npx oss-maintainer-kit init ../my-repo \
   --repo-name my-repo \
-  --maintainer "Your Name"
+  --maintainer "Your Name" \
+  --preset first-public-repo
 ```
 
 By default, existing files are left untouched. Add `--force` only if you want to overwrite matching files.
 
 Then open `docs/START_HERE.md` in the generated repo. That is the fastest path to understanding what just happened.
+
+If you want the full starter, omit `--preset` or set `--preset base`.
 
 ## Suggested first hour after setup
 
@@ -104,6 +106,13 @@ They are intentionally conservative and require an `OPENAI_API_KEY` GitHub secre
 
 If you already use built-in Codex GitHub reviews, you may not want the pull request workflow as well, because it can create duplicate feedback.
 
+## Presets
+
+- `first-public-repo`: recommended if you are opening up a repo for the first time or mostly working solo
+- `base`: full starter with both optional Codex workflows
+
+The `first-public-repo` preset intentionally leaves out release-prep automation. Most new repos do not need it yet.
+
 ## What this kit does not do
 
 - It does not write application code.
@@ -122,7 +131,8 @@ npm test
 Smoke check the CLI:
 
 ```bash
-node ./bin/maintainer-kit.js init ../example-repo --dry-run
+node ./bin/maintainer-kit.js explain
+node ./bin/maintainer-kit.js init ../example-repo --preset first-public-repo --dry-run
 ```
 
 ## Roadmap
