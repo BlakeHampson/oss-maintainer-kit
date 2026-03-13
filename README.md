@@ -4,29 +4,76 @@
 ![License](https://img.shields.io/github/license/BlakeHampson/oss-maintainer-kit)
 ![Issues](https://img.shields.io/github/issues/BlakeHampson/oss-maintainer-kit)
 
-OSS Maintainer Kit helps maintainers stand up a clean, Codex-ready open-source workflow in minutes.
+Turn a code repository into a public project that other people can understand, review, and contribute to.
+
+If you can already get software working with Codex, Claude Code, or by hand, but GitHub and open-source process still feel confusing, this kit fills in the repository setup that usually gets skipped. It gives you the structure around your code: contributor forms, pull request prompts, repo instructions for AI reviewers, and optional Codex workflows.
+
+In this repo, "maintainer" just means the person responsible for the project. If you are working solo, that is you.
 
 It ships with a tiny CLI and a practical starter pack:
 
-- `AGENTS.md` guidance for repository-aware reviews
+- `AGENTS.md` guidance that helps AI reviews fit your repo
+- `docs/START_HERE.md` so a new repo owner knows what to do first
 - GitHub issue and pull request templates
 - example Codex GitHub Action workflows for pull request review and release prep
-- maintainer workflow documentation you can drop into a new or existing repository
+- plain-English workflow documentation you can drop into a new or existing repository
 
-## Highlights
+## What this solves
 
-- dependency-free Node CLI
-- safe-by-default scaffolding that skips existing files unless you opt into `--force`
-- `--dry-run` preview mode for maintainers who want to inspect the generated file set first
-- Codex-ready GitHub workflow templates grounded in OpenAI's published integration guidance
+Most new public repos have the same gap:
 
-## Why this exists
+- the code works, but nobody knows how to report a bug well
+- pull requests arrive with no context
+- AI review tools do not know what matters in the repo
+- the owner is still learning GitHub and does not want heavyweight process
 
-Open-source maintainers are asked to do too much at once: review pull requests, triage issues, prepare releases, document decisions, and keep contributor guidance current. This repo packages the basics into a reusable starter so teams can adopt Codex-assisted maintenance without building the setup from scratch.
+OSS Maintainer Kit gives you the minimum useful structure without forcing a giant maintainer handbook on day one.
+
+## What this does in plain English
+
+| File or folder | Why it exists | Do you need it on day one? |
+| --- | --- | --- |
+| `docs/START_HERE.md` | Explains the generated files and what to do first. | Yes |
+| `AGENTS.md` | Tells Codex and contributors what good changes look like in your repo. | Yes |
+| `.github/ISSUE_TEMPLATE/*` | Turns vague bug reports and ideas into something you can act on. | Yes |
+| `.github/PULL_REQUEST_TEMPLATE.md` | Helps contributors explain what changed and how they checked it. | Yes |
+| `.github/workflows/codex-pr-review.yml` | Optional GitHub Action that asks Codex to review pull requests. | Later if you want AI review in Actions |
+| `.github/workflows/codex-release-prep.yml` | Optional GitHub Action that drafts release prep notes. | Later, once you actually ship versions |
+| `docs/MAINTAINER_WORKFLOW.md` | Explains how issues, pull requests, and releases are handled. | Helpful, but not urgent |
+
+## Who this is for
+
+- solo builders opening up their first public repo
+- people doing AI-assisted or "vibe-coded" development who want cleaner GitHub workflows
+- experienced maintainers who want a lightweight starter instead of building templates from scratch
+
+## If you are new to GitHub or open source
+
+- You do not need outside contributors before this becomes useful.
+- You do not need to understand every workflow file immediately.
+- You can ignore the release workflow until you start shipping versions.
+- Rough-but-clear docs beat perfect docs that never get written.
 
 ## Quick start
 
-Clone this repository and run the initializer against a target repo:
+Clone this repository and use the CLI locally:
+
+```bash
+git clone https://github.com/BlakeHampson/oss-maintainer-kit.git
+cd oss-maintainer-kit
+node ./bin/maintainer-kit.js explain
+```
+
+Preview the files before writing anything:
+
+```bash
+node ./bin/maintainer-kit.js init ../my-repo \
+  --repo-name my-repo \
+  --maintainer "Your Name" \
+  --dry-run
+```
+
+If the preview looks right, apply it:
 
 ```bash
 node ./bin/maintainer-kit.js init ../my-repo \
@@ -34,36 +81,35 @@ node ./bin/maintainer-kit.js init ../my-repo \
   --maintainer "Your Name"
 ```
 
-By default, existing files are left untouched. Add `--force` if you want to overwrite matching files.
-Add `--dry-run` to preview the generated file set before writing anything.
+By default, existing files are left untouched. Add `--force` only if you want to overwrite matching files.
 
-```bash
-node ./bin/maintainer-kit.js init ../my-repo --dry-run
-```
+Then open `docs/START_HERE.md` in the generated repo. That is the fastest path to understanding what just happened.
 
-## What gets added
+## Suggested first hour after setup
 
-- `AGENTS.md`
-- `.github/PULL_REQUEST_TEMPLATE.md`
-- `.github/ISSUE_TEMPLATE/bug_report.yml`
-- `.github/ISSUE_TEMPLATE/feature_request.yml`
-- `.github/ISSUE_TEMPLATE/config.yml`
-- `.github/workflows/codex-pr-review.yml`
-- `.github/workflows/codex-release-prep.yml`
-- `docs/MAINTAINER_WORKFLOW.md`
+1. Read `docs/START_HERE.md`.
+2. Edit `AGENTS.md` so it reflects your stack, risk areas, and review priorities.
+3. Keep the issue and pull request templates unless they actively get in your way.
+4. Commit the generated files.
+5. Decide later whether you want the optional OpenAI-powered GitHub Actions.
 
-## Example workflows
+## Optional AI workflows
 
-The included GitHub Actions are based on OpenAI's official docs and the `openai/codex-action` repository:
+The included GitHub Actions are based on OpenAI's official docs and the `openai/codex-action` repository. They are optional:
 
-- automatic or on-demand pull request review
-- release-prep drafts from git history and changelog context
+- `codex-pr-review.yml` posts a Codex review comment on pull requests
+- `codex-release-prep.yml` drafts a release summary and checklist
 
-They are intentionally conservative:
+They are intentionally conservative and require an `OPENAI_API_KEY` GitHub secret.
 
-- they expect an `OPENAI_API_KEY` GitHub secret
-- they default to safe permissions
-- they tell Codex to follow `AGENTS.md`
+If you already use built-in Codex GitHub reviews, you may not want the pull request workflow as well, because it can create duplicate feedback.
+
+## What this kit does not do
+
+- It does not write application code.
+- It does not replace tests or human review.
+- It does not guarantee project traction, security, or contributor activity.
+- It does not force you into heavyweight process.
 
 ## Local development
 
@@ -78,13 +124,6 @@ Smoke check the CLI:
 ```bash
 node ./bin/maintainer-kit.js init ../example-repo --dry-run
 ```
-
-## Recommended repo setup after scaffolding
-
-1. Turn on Codex automatic reviews in your Codex GitHub settings if you want built-in PR review.
-2. Add `OPENAI_API_KEY` to repository secrets if you want the example GitHub Actions to run.
-3. Tighten `AGENTS.md` to match your stack, risk areas, and release process.
-4. Add labels, CODEOWNERS, and branch protections once the basics are in place.
 
 ## Roadmap
 

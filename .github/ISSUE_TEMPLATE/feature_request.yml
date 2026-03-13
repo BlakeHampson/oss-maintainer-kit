@@ -1,29 +1,28 @@
 name: Feature request
-description: Suggest an improvement with clear maintainer or user value.
+description: Suggest an improvement. Rough notes are fine; you do not need a polished spec.
 title: "[Feature]: "
 labels:
   - enhancement
 body:
   - type: textarea
-    id: problem
+    id: goal
     attributes:
-      label: Problem to solve
-      description: What pain point or workflow gap are you seeing?
+      label: What are you trying to get done?
+      description: Start with the job you want the project to help you do.
+    validations:
+      required: true
+  - type: textarea
+    id: gap
+    attributes:
+      label: What is missing or frustrating today?
     validations:
       required: true
   - type: textarea
     id: proposal
     attributes:
-      label: Proposed approach
-      description: Describe the change you want.
-    validations:
-      required: true
-  - type: textarea
-    id: alternatives
-    attributes:
-      label: Alternatives considered
-      description: What else could solve this?
+      label: What change would help?
+      description: Rough notes are enough. Screenshots, links, and examples are welcome.
   - type: textarea
     id: success
     attributes:
-      label: What would success look like?
+      label: How would we know this was worth shipping?

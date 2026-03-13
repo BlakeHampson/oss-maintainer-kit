@@ -4,7 +4,7 @@ import { mkdtemp, readFile, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
-import { initKit, parseCliArgs, replaceTokens } from "../src/scaffold.js";
+import { explainKit, initKit, parseCliArgs, replaceTokens, usage } from "../src/scaffold.js";
 
 test("parseCliArgs handles init flags", () => {
   const parsed = parseCliArgs([
@@ -24,6 +24,12 @@ test("parseCliArgs handles init flags", () => {
   assert.equal(parsed.force, true);
 });
 
+test("parseCliArgs handles explain", () => {
+  const parsed = parseCliArgs(["explain"]);
+
+  assert.equal(parsed.command, "explain");
+});
+
 test("replaceTokens replaces all supported placeholders", () => {
   const rendered = replaceTokens("__PROJECT_NAME__ by __MAINTAINER_NAME__", {
     "__MAINTAINER_NAME__": "Jane Doe",
@@ -31,6 +37,11 @@ test("replaceTokens replaces all supported placeholders", () => {
   });
 
   assert.equal(rendered, "demo-repo by Jane Doe");
+});
+
+test("usage and explainKit describe the beginner path", () => {
+  assert.match(usage(), /maintainer-kit explain/);
+  assert.match(explainKit(), /docs\/START_HERE\.md/);
 });
 
 test("initKit copies templates and injects tokens", async () => {
@@ -90,6 +101,7 @@ test("initKit dry-run previews files without writing them", async () => {
   });
 
   assert.ok(result.created.includes("AGENTS.md"));
+  assert.ok(result.created.includes(path.join("docs", "START_HERE.md")));
 
   try {
     await readFile(path.join(previewTarget, "AGENTS.md"), "utf8");

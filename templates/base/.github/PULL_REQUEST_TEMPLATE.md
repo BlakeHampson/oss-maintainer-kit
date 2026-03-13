@@ -1,14 +1,21 @@
-## Summary
+## What changed?
 
 - what changed
-- why it changed
+
+## Why does it matter?
+
+- bug fix, cleanup, new capability, or documentation improvement
+
+## How did you check it?
+
+- tests, manual checks, or reasons no testing was needed
 
 ## Checks
 
-- [ ] I ran relevant tests or smoke checks
+- [ ] I ran tests or a reasonable manual check
 - [ ] I updated docs or maintainer notes if behavior changed
-- [ ] I reviewed workflow and permission changes carefully
+- [ ] I reviewed secrets, workflow permissions, or automation changes carefully
 
-## Reviewer Notes
+## Anything you want the reviewer to focus on?
 
-Focus on correctness, regression risk, test gaps, and any missing follow-up work.
+Call out risk, uncertainty, or follow-up work.

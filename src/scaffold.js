@@ -10,13 +10,44 @@ export const templateRoot = path.resolve(__dirname, "..", "templates", "base");
 export function usage() {
   return `OSS Maintainer Kit
 
+Turn a working repository into a public project that is easier to review,
+explain, and contribute to.
+
 Usage:
+  maintainer-kit explain
   maintainer-kit init [target-directory] [--repo-name name] [--maintainer "Name"] [--force] [--dry-run]
 
 Examples:
+  maintainer-kit explain
   maintainer-kit init .
   maintainer-kit init ../my-repo --repo-name my-repo --maintainer "Jane Doe"
   maintainer-kit init ../my-repo --dry-run
+`;
+}
+
+export function explainKit() {
+  return `OSS Maintainer Kit helps you add the boring but important repository files
+that make a codebase easier to share in public.
+
+What it adds:
+- docs/START_HERE.md: the first file to read after setup
+- AGENTS.md: instructions for AI reviewers and future contributors
+- issue templates: structured bug reports and feature requests
+- pull request template: a simple way to explain changes
+- codex-pr-review.yml: an optional GitHub Action that asks Codex to review pull requests
+- codex-release-prep.yml: an optional GitHub Action that drafts release notes and a checklist
+
+What it does not do:
+- it does not change your application code
+- it does not force you to use every workflow
+- it does not replace tests or human judgment
+
+If you are new to GitHub or open source, start with:
+1. maintainer-kit init ../my-repo --dry-run
+2. maintainer-kit init ../my-repo --repo-name my-repo --maintainer "Your Name"
+3. open docs/START_HERE.md in the generated repo
+
+You can safely ignore the release workflow until you actually start shipping versions.
 `;
 }
 
@@ -33,6 +64,13 @@ export function parseCliArgs(argv) {
 
   if (argv.length === 0 || argv.includes("--help") || argv.includes("-h")) {
     result.help = true;
+    return result;
+  }
+
+  if (result.command === "explain") {
+    if (argv.length > 1) {
+      throw new Error(`Unexpected argument: ${argv[1]}`);
+    }
     return result;
   }
 

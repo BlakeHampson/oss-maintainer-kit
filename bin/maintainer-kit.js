@@ -3,7 +3,7 @@
 import path from "node:path";
 import process from "node:process";
 
-import { initKit, parseCliArgs, usage } from "../src/scaffold.js";
+import { explainKit, initKit, parseCliArgs, usage } from "../src/scaffold.js";
 
 async function main() {
   const args = parseCliArgs(process.argv.slice(2));
@@ -13,13 +13,18 @@ async function main() {
     return;
   }
 
+  if (args.command === "explain") {
+    console.log(explainKit());
+    return;
+  }
+
   if (args.command !== "init") {
     throw new Error(`Unknown command: ${args.command}`);
   }
 
   const targetDir = path.resolve(process.cwd(), args.targetDir ?? ".");
   const repoName = args.repoName ?? path.basename(targetDir);
-  const maintainerName = args.maintainerName ?? "Primary Maintainer";
+  const maintainerName = args.maintainerName ?? "Project Owner";
 
   const result = await initKit({
     dryRun: args.dryRun,
@@ -52,10 +57,22 @@ async function main() {
   }
 
   console.log("");
-  console.log("Next steps:");
-  console.log("1. Review AGENTS.md and tailor it to your repository.");
-  console.log("2. Add OPENAI_API_KEY to repository secrets if you want the Codex workflows.");
-  console.log("3. Commit the generated files and enable the workflows you want to use.");
+  console.log(
+    args.dryRun
+      ? "This was a preview only. No files were written."
+      : "This added repository setup files, not application code.",
+  );
+  console.log(
+    args.dryRun
+      ? "First file to read after you apply the kit: docs/START_HERE.md"
+      : "Start with: docs/START_HERE.md",
+  );
+  console.log("");
+  console.log("Suggested next steps:");
+  console.log("1. Read docs/START_HERE.md for a plain-English guide to each file.");
+  console.log("2. Edit AGENTS.md so reviews match your repo and risk areas.");
+  console.log("3. Commit the files you want to keep.");
+  console.log("4. Add OPENAI_API_KEY only if you want the optional Codex GitHub Actions.");
 }
 
 main().catch((error) => {

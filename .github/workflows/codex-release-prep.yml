@@ -1,3 +1,6 @@
+# Optional workflow:
+# - Drafts a release summary and checklist
+# - Most new repos can ignore this until they actually ship versions or tags
 name: Codex release prep
 
 on:

@@ -1,20 +1,27 @@
 name: Bug report
-description: Report a defect with enough detail for maintainers to reproduce it.
+description: Tell us what feels broken. Rough notes are fine as long as someone else can follow them.
 title: "[Bug]: "
 labels:
   - bug
 body:
   - type: textarea
-    id: summary
+    id: goal
     attributes:
-      label: What happened?
-      description: Describe the bug and the expected behavior.
+      label: What were you trying to do?
+      description: Start with the goal, not the diagnosis.
+    validations:
+      required: true
+  - type: textarea
+    id: happened
+    attributes:
+      label: What happened instead?
+      description: Include what you expected to happen if it helps.
     validations:
       required: true
   - type: textarea
     id: steps
     attributes:
-      label: Steps to reproduce
+      label: How can someone else reproduce it?
       description: Include exact commands, URLs, or files when possible.
       placeholder: |
         1. Go to...
@@ -25,10 +32,10 @@ body:
   - type: textarea
     id: impact
     attributes:
-      label: Impact
-      description: What breaks for users or maintainers?
+      label: Why does this matter?
+      description: What breaks for users, contributors, or maintainers?
   - type: textarea
     id: environment
     attributes:
-      label: Environment
-      description: OS, runtime, browser, version, or branch details.
+      label: Anything else that might help?
+      description: OS, runtime, browser, version, screenshots, branch details, or links.

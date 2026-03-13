@@ -1,3 +1,7 @@
+# Optional workflow:
+# - Posts a Codex review comment on pull requests
+# - Keep this if you want GitHub Actions to run reviews
+# - Remove it if you already use built-in Codex auto review and want to avoid duplicate feedback
 name: Codex pull request review
 
 on:
@@ -35,7 +39,7 @@ jobs:
 
             Review only the changes introduced by this pull request.
             Prioritize correctness issues, regression risk, security issues, missing tests, and documentation drift.
-            Keep the review concise and actionable.
+            Keep the review concise, actionable, and understandable to a first-time maintainer.
 
             Pull request title:
             ${{ github.event.pull_request.title }}
