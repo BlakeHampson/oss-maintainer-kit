@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1 - 2026-03-13
+
+- link all live preset example repositories from the main README
+- publish public example repositories for `javascript-library`, `python-package`, and `docs-heavy`
+- align the npm package README with the expanded example catalog
+
 ## 0.3.0 - 2026-03-13
 
 - add a standard label manifest and `sync-labels` command

@@ -6,6 +6,9 @@
 ![License](https://img.shields.io/github/license/BlakeHampson/oss-maintainer-kit)
 ![Issues](https://img.shields.io/github/issues/BlakeHampson/oss-maintainer-kit)
 [![Example repo](https://img.shields.io/badge/example-first--public--repo-0ea5e9)](https://github.com/BlakeHampson/oss-maintainer-kit-example)
+[![JS example](https://img.shields.io/badge/example-javascript--library-f59e0b)](https://github.com/BlakeHampson/oss-maintainer-kit-javascript-example)
+[![Python example](https://img.shields.io/badge/example-python--package-2563eb)](https://github.com/BlakeHampson/oss-maintainer-kit-python-example)
+[![Docs example](https://img.shields.io/badge/example-docs--heavy-16a34a)](https://github.com/BlakeHampson/oss-maintainer-kit-docs-example)
 
 Turn a code repository into a public project that other people can understand, review, and contribute to.
 
@@ -95,7 +98,12 @@ Then open `docs/START_HERE.md` in the generated repo. That is the fastest path t
 
 If you want the full starter, omit `--preset` or set `--preset base`.
 
-If you want a concrete generated repo to inspect, see [oss-maintainer-kit-example](https://github.com/BlakeHampson/oss-maintainer-kit-example).
+If you want a concrete generated repo to inspect, start with one of these:
+
+- [oss-maintainer-kit-example](https://github.com/BlakeHampson/oss-maintainer-kit-example) for `first-public-repo`
+- [oss-maintainer-kit-javascript-example](https://github.com/BlakeHampson/oss-maintainer-kit-javascript-example) for `javascript-library`
+- [oss-maintainer-kit-python-example](https://github.com/BlakeHampson/oss-maintainer-kit-python-example) for `python-package`
+- [oss-maintainer-kit-docs-example](https://github.com/BlakeHampson/oss-maintainer-kit-docs-example) for `docs-heavy`
 
 ## Suggested first hour after setup
 
@@ -118,13 +126,13 @@ If you already use built-in Codex GitHub reviews, you may not want the pull requ
 
 ## Presets
 
-| Preset | Best for | What changes |
-| --- | --- | --- |
-| `first-public-repo` | first-time public repos and solo builders | leaves out release-prep automation by default |
-| `base` | general-purpose repos | includes both optional Codex workflows |
-| `javascript-library` | JavaScript and TypeScript packages | adds package-focused review guidance and docs |
-| `python-package` | Python packages and tools | adds packaging and environment-focused guidance |
-| `docs-heavy` | docs, guides, and content-heavy repos | adds accuracy, examples, and structure-focused guidance |
+| Preset | Best for | What changes | Example repo |
+| --- | --- | --- | --- |
+| `first-public-repo` | first-time public repos and solo builders | leaves out release-prep automation by default | [oss-maintainer-kit-example](https://github.com/BlakeHampson/oss-maintainer-kit-example) |
+| `base` | general-purpose repos | includes both optional Codex workflows | scaffold from the main examples if you want the full starter |
+| `javascript-library` | JavaScript and TypeScript packages | adds package-focused review guidance and docs | [oss-maintainer-kit-javascript-example](https://github.com/BlakeHampson/oss-maintainer-kit-javascript-example) |
+| `python-package` | Python packages and tools | adds packaging and environment-focused guidance | [oss-maintainer-kit-python-example](https://github.com/BlakeHampson/oss-maintainer-kit-python-example) |
+| `docs-heavy` | docs, guides, and content-heavy repos | adds accuracy, examples, and structure-focused guidance | [oss-maintainer-kit-docs-example](https://github.com/BlakeHampson/oss-maintainer-kit-docs-example) |
 
 The `first-public-repo` preset intentionally leaves out release-prep automation. Most new repos do not need it yet.
 
