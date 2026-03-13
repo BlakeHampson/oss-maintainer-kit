@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0 - 2026-03-13
+
+- add a standard label manifest and `sync-labels` command
+- add docs for safe repeated label sync runs
+- add npm/package badges and a stronger README discoverability pass
+- dogfood the managed label set on the main repository
+
 ## 0.2.0 - 2026-03-13
 
 - add `javascript-library`, `python-package`, and `docs-heavy` presets

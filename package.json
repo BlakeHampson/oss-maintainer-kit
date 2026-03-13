@@ -1,11 +1,14 @@
 {
   "name": "oss-maintainer-kit",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Turn a code repository into a contributor-friendly public project with clear GitHub workflows.",
   "type": "module",
-  "bin": "bin/maintainer-kit.js",
+  "bin": {
+    "oss-maintainer-kit": "bin/maintainer-kit.js"
+  },
   "files": [
     "bin",
+    "manifests",
     "src",
     "templates",
     "README.md",
@@ -28,12 +31,16 @@
   "keywords": [
     "open-source",
     "starter-kit",
+    "cli",
     "github",
     "github-actions",
     "codex",
     "agents-md",
     "automation",
-    "maintainers"
+    "maintainers",
+    "labels",
+    "triage",
+    "npx"
   ],
   "author": "Blake Hampson",
   "license": "MIT",

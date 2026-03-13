@@ -48,6 +48,7 @@ test("usage and explainKit describe the beginner path", () => {
   assert.match(usage(), /javascript-library/);
   assert.match(usage(), /python-package/);
   assert.match(usage(), /docs-heavy/);
+  assert.match(usage(), /sync-labels/);
   assert.match(explainKit(), /docs\/START_HERE\.md/);
 });
 

@@ -84,6 +84,7 @@ explain, and contribute to.
 Usage:
   ${commandName} explain
   ${commandName} init [target-directory] [--repo-name name] [--maintainer "Name"] [--preset name] [--force] [--dry-run]
+  ${commandName} sync-labels OWNER/REPO [--manifest name] [--dry-run]
 
 Presets:
 ${formatPresetList()}
@@ -94,6 +95,7 @@ Examples:
   ${commandName} init ../my-repo --preset first-public-repo --dry-run
   ${commandName} init ../my-repo --repo-name my-repo --maintainer "Jane Doe"
   ${commandName} init ../my-repo --dry-run
+  ${commandName} sync-labels BlakeHampson/oss-maintainer-kit --dry-run
 `;
 }
 
@@ -108,6 +110,7 @@ What it adds:
 - pull request template: a simple way to explain changes
 - codex-pr-review.yml: an optional GitHub Action that asks Codex to review pull requests
 - codex-release-prep.yml: an optional GitHub Action that drafts release notes and a checklist
+- a label sync command for standard GitHub triage labels
 
 Presets:
 ${formatPresetList()}
@@ -121,6 +124,7 @@ If you are new to GitHub or open source, start with:
 1. ${commandName} init ../my-repo --preset first-public-repo --dry-run
 2. ${commandName} init ../my-repo --repo-name my-repo --maintainer "Your Name" --preset first-public-repo
 3. open docs/START_HERE.md in the generated repo
+4. optionally run ${commandName} sync-labels OWNER/REPO --dry-run to standardize labels
 
 You can safely ignore the release workflow until you actually start shipping versions.
 `;
@@ -132,9 +136,11 @@ export function parseCliArgs(argv) {
     dryRun: false,
     force: false,
     help: false,
+    manifestName: "standard",
     maintainerName: undefined,
     preset: "base",
     repoName: undefined,
+    targetRepo: undefined,
     targetDir: undefined,
   };
 
@@ -192,12 +198,25 @@ export function parseCliArgs(argv) {
       continue;
     }
 
+    if (value === "--manifest") {
+      if (!argv[index + 1]) {
+        throw new Error("--manifest requires a value");
+      }
+      result.manifestName = argv[index + 1];
+      index += 1;
+      continue;
+    }
+
     if (value.startsWith("--")) {
       throw new Error(`Unknown option: ${value}`);
     }
 
     if (positionalCount === 0) {
-      result.targetDir = value;
+      if (result.command === "sync-labels") {
+        result.targetRepo = value;
+      } else {
+        result.targetDir = value;
+      }
       positionalCount += 1;
       continue;
     }

@@ -4,6 +4,7 @@ import path from "node:path";
 import process from "node:process";
 
 import { explainKit, initKit, parseCliArgs, usage } from "../src/scaffold.js";
+import { syncLabels } from "../src/labels.js";
 
 async function main() {
   const args = parseCliArgs(process.argv.slice(2));
@@ -15,6 +16,44 @@ async function main() {
 
   if (args.command === "explain") {
     console.log(explainKit());
+    return;
+  }
+
+  if (args.command === "sync-labels") {
+    if (!args.targetRepo) {
+      throw new Error("sync-labels requires an OWNER/REPO target");
+    }
+
+    const result = await syncLabels({
+      dryRun: args.dryRun,
+      manifestName: args.manifestName,
+      repo: args.targetRepo,
+    });
+
+    console.log(`Manifest: ${result.manifest.name}@${result.manifest.version}`);
+    console.log(`Repository: ${result.repo}`);
+    console.log(`${args.dryRun ? "Planned changes" : "Applied changes"}: ${result.actionable.length}`);
+
+    if (result.operations.length > 0) {
+      console.log("");
+      for (const operation of result.operations) {
+        if (operation.type === "noop") {
+          console.log(`- keep ${operation.label.name}`);
+          continue;
+        }
+
+        console.log(`- ${operation.type} ${operation.label.name}`);
+      }
+    }
+
+    if (args.dryRun) {
+      console.log("");
+      console.log("Dry run only. No labels were changed.");
+    } else if (result.actionable.length > 0) {
+      console.log("");
+      console.log("Labels synced.");
+    }
+
     return;
   }
 

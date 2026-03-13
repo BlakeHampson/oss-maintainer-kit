@@ -1,8 +1,11 @@
 # OSS Maintainer Kit
 
+[![npm version](https://img.shields.io/npm/v/oss-maintainer-kit)](https://www.npmjs.com/package/oss-maintainer-kit)
+[![npm downloads](https://img.shields.io/npm/dm/oss-maintainer-kit)](https://www.npmjs.com/package/oss-maintainer-kit)
 ![Release](https://img.shields.io/github/v/release/BlakeHampson/oss-maintainer-kit?display_name=tag)
 ![License](https://img.shields.io/github/license/BlakeHampson/oss-maintainer-kit)
 ![Issues](https://img.shields.io/github/issues/BlakeHampson/oss-maintainer-kit)
+[![Example repo](https://img.shields.io/badge/example-first--public--repo-0ea5e9)](https://github.com/BlakeHampson/oss-maintainer-kit-example)
 
 Turn a code repository into a public project that other people can understand, review, and contribute to.
 
@@ -16,6 +19,7 @@ It ships with a tiny CLI and a practical starter pack:
 - `docs/START_HERE.md` so a new repo owner knows what to do first
 - GitHub issue and pull request templates
 - example Codex GitHub Action workflows for pull request review and release prep
+- a repeatable label sync command for first-pass GitHub triage labels
 - plain-English workflow documentation you can drop into a new or existing repository
 
 ## What this solves
@@ -123,6 +127,38 @@ If you already use built-in Codex GitHub reviews, you may not want the pull requ
 | `docs-heavy` | docs, guides, and content-heavy repos | adds accuracy, examples, and structure-focused guidance |
 
 The `first-public-repo` preset intentionally leaves out release-prep automation. Most new repos do not need it yet.
+
+## Standard label sync
+
+Most repos eventually want the same first-pass labels for triage.
+
+Preview the standard label set on any repo:
+
+```bash
+npx oss-maintainer-kit sync-labels BlakeHampson/oss-maintainer-kit --dry-run
+```
+
+This command uses the GitHub CLI, so `gh auth status` should show that you are logged in first.
+
+Apply it:
+
+```bash
+npx oss-maintainer-kit sync-labels BlakeHampson/oss-maintainer-kit
+```
+
+What the standard manifest manages:
+
+- `bug`
+- `enhancement`
+- `docs`
+- `release`
+- `good first issue`
+- `needs reproduction`
+- `blocked`
+
+The sync is intentionally non-destructive. It creates missing labels and updates matching labels, but leaves unrelated labels alone.
+
+More detail: [docs/LABELS.md](docs/LABELS.md)
 
 ## What this kit does not do
 

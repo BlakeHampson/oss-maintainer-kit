@@ -1,0 +1,41 @@
+{
+  "name": "standard",
+  "version": "2026-03-13",
+  "labels": [
+    {
+      "name": "bug",
+      "color": "D73A4A",
+      "description": "Something is broken or behaving incorrectly"
+    },
+    {
+      "name": "enhancement",
+      "color": "A2EEEF",
+      "description": "A meaningful improvement or new capability"
+    },
+    {
+      "name": "docs",
+      "color": "0075CA",
+      "description": "Documentation, guides, examples, or README improvements"
+    },
+    {
+      "name": "release",
+      "color": "5319E7",
+      "description": "Release prep, changelog, or publishing work"
+    },
+    {
+      "name": "good first issue",
+      "color": "7057FF",
+      "description": "A good starting point for a new contributor"
+    },
+    {
+      "name": "needs reproduction",
+      "color": "FBCA04",
+      "description": "Needs a clearer reproduction before work should start"
+    },
+    {
+      "name": "blocked",
+      "color": "6B7280",
+      "description": "Cannot move forward until another issue or decision is resolved"
+    }
+  ]
+}
