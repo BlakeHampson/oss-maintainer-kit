@@ -7,6 +7,7 @@ const __dirname = path.dirname(__filename);
 
 const templatesRoot = path.resolve(__dirname, "..", "templates");
 export const templateRoot = path.resolve(templatesRoot, "base");
+const commandName = "oss-maintainer-kit";
 
 export const presets = {
   base: {
@@ -54,18 +55,18 @@ Turn a working repository into a public project that is easier to review,
 explain, and contribute to.
 
 Usage:
-  maintainer-kit explain
-  maintainer-kit init [target-directory] [--repo-name name] [--maintainer "Name"] [--preset name] [--force] [--dry-run]
+  ${commandName} explain
+  ${commandName} init [target-directory] [--repo-name name] [--maintainer "Name"] [--preset name] [--force] [--dry-run]
 
 Presets:
 ${formatPresetList()}
 
 Examples:
-  maintainer-kit explain
-  maintainer-kit init .
-  maintainer-kit init ../my-repo --preset first-public-repo --dry-run
-  maintainer-kit init ../my-repo --repo-name my-repo --maintainer "Jane Doe"
-  maintainer-kit init ../my-repo --dry-run
+  ${commandName} explain
+  ${commandName} init .
+  ${commandName} init ../my-repo --preset first-public-repo --dry-run
+  ${commandName} init ../my-repo --repo-name my-repo --maintainer "Jane Doe"
+  ${commandName} init ../my-repo --dry-run
 `;
 }
 
@@ -90,8 +91,8 @@ What it does not do:
 - it does not replace tests or human judgment
 
 If you are new to GitHub or open source, start with:
-1. maintainer-kit init ../my-repo --preset first-public-repo --dry-run
-2. maintainer-kit init ../my-repo --repo-name my-repo --maintainer "Your Name" --preset first-public-repo
+1. ${commandName} init ../my-repo --preset first-public-repo --dry-run
+2. ${commandName} init ../my-repo --repo-name my-repo --maintainer "Your Name" --preset first-public-repo
 3. open docs/START_HERE.md in the generated repo
 
 You can safely ignore the release workflow until you actually start shipping versions.

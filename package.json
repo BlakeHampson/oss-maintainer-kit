@@ -3,9 +3,7 @@
   "version": "0.1.1",
   "description": "Turn a code repository into a contributor-friendly public project with clear GitHub workflows.",
   "type": "module",
-  "bin": {
-    "maintainer-kit": "./bin/maintainer-kit.js"
-  },
+  "bin": "bin/maintainer-kit.js",
   "files": [
     "bin",
     "src",
