@@ -1,5 +1,9 @@
 # OSS Maintainer Kit
 
+![Release](https://img.shields.io/github/v/release/BlakeHampson/oss-maintainer-kit?display_name=tag)
+![License](https://img.shields.io/github/license/BlakeHampson/oss-maintainer-kit)
+![Issues](https://img.shields.io/github/issues/BlakeHampson/oss-maintainer-kit)
+
 OSS Maintainer Kit helps maintainers stand up a clean, Codex-ready open-source workflow in minutes.
 
 It ships with a tiny CLI and a practical starter pack:
@@ -8,6 +12,13 @@ It ships with a tiny CLI and a practical starter pack:
 - GitHub issue and pull request templates
 - example Codex GitHub Action workflows for pull request review and release prep
 - maintainer workflow documentation you can drop into a new or existing repository
+
+## Highlights
+
+- dependency-free Node CLI
+- safe-by-default scaffolding that skips existing files unless you opt into `--force`
+- `--dry-run` preview mode for maintainers who want to inspect the generated file set first
+- Codex-ready GitHub workflow templates grounded in OpenAI's published integration guidance
 
 ## Why this exists
 
