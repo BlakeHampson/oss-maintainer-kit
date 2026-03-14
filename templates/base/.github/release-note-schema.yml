@@ -1,0 +1,26 @@
+# Optional structured release-note schema
+# Keep this file if you want `codex-release-prep.yml` to include a machine-readable YAML block.
+# Delete it if plain Markdown release notes are enough for this repo.
+
+schema_version: 1
+output_format: yaml
+fields:
+  version: string
+  summary: string
+  highlights:
+    type: array
+    item:
+      title: string
+      audience: user | maintainer | developer
+      type: feature | fix | docs | breaking | internal
+      breaking: boolean
+      note: string
+  checklist:
+    type: array
+    item: string
+  risks:
+    type: array
+    item: string
+  follow_up:
+    type: array
+    item: string

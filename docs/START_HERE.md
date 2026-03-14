@@ -11,8 +11,9 @@ If you are working alone, you are still the maintainer. In this context, that ju
 1. Read `AGENTS.md`.
 2. Keep the issue and pull request templates unless they are clearly wrong for your repo.
 3. Ignore `.github/workflows/codex-release-prep.yml` until you actually ship versions.
-4. Add `OPENAI_API_KEY` only if you want the optional Codex GitHub Actions.
-5. Make one small pull request to yourself and see how the flow feels.
+4. Delete `.github/release-note-schema.yml` unless you want release prep output in structured YAML as well as Markdown.
+5. Add `OPENAI_API_KEY` only if you want the optional Codex GitHub Actions.
+6. Make one small pull request to yourself and see how the flow feels.
 
 ## What each generated file is for
 
@@ -20,6 +21,7 @@ If you are working alone, you are still the maintainer. In this context, that ju
 - `.github/PULL_REQUEST_TEMPLATE.md`: asks contributors to explain what changed, why it matters, and how they checked it
 - `.github/ISSUE_TEMPLATE/bug_report.yml`: helps someone report a bug without leaving out the important details
 - `.github/ISSUE_TEMPLATE/feature_request.yml`: helps someone describe a useful improvement without writing a full spec
+- `.github/release-note-schema.yml`: optional schema for teams that want machine-readable release prep output
 - `.github/workflows/codex-pr-review.yml`: optional GitHub Action that asks Codex to review pull requests
 - `.github/workflows/codex-release-prep.yml`: optional GitHub Action that drafts release prep notes
 - `docs/MAINTAINER_WORKFLOW.md`: plain-English explanation of how this repo handles issues, pull requests, and releases
@@ -36,3 +38,4 @@ If you are working alone, you are still the maintainer. In this context, that ju
 - Replace placeholder text in `AGENTS.md` with the things that matter most in your repo.
 - Simplify template wording if your contributors are likely to be new to GitHub too.
 - Remove any workflow you do not expect to use in the next two weeks.
+- Keep `release-note-schema.yml` only if you want release prep that can feed another automation step.

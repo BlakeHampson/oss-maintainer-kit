@@ -50,6 +50,7 @@ OSS Maintainer Kit gives you the minimum useful structure without forcing a gian
 | `AGENTS.md` | Tells Codex and contributors what good changes look like in your repo. | Yes |
 | `.github/ISSUE_TEMPLATE/*` | Turns vague bug reports and ideas into something you can act on. | Yes |
 | `.github/PULL_REQUEST_TEMPLATE.md` | Helps contributors explain what changed and how they checked it. | Yes |
+| `.github/release-note-schema.yml` | Optional schema for teams that want machine-readable release prep output. | No, delete it unless another tool needs structured release data |
 | `.github/workflows/repo-health.yml` | Optional GitHub Action that runs low-risk checks like `check-docs` in pull requests. | Often yes, especially for docs-heavy or security-sensitive repos |
 | `.github/workflows/codex-pr-review.yml` | Optional GitHub Action that asks Codex to review pull requests. | Later if you want AI review in Actions |
 | `.github/workflows/codex-release-prep.yml` | Optional GitHub Action that drafts release prep notes. | Later, once you actually ship versions |
@@ -150,10 +151,13 @@ The included GitHub Actions and workflow templates are optional:
 - `repo-health.yml` runs low-risk checks like `check-docs` in pull requests and does not require API keys
 - `codex-pr-review.yml` posts a Codex review comment on pull requests
 - `codex-release-prep.yml` drafts a release summary and checklist
+- `release-note-schema.yml` lets that same release-prep flow also emit a machine-readable YAML block when you need it
 
 The Codex workflows are intentionally conservative and require an `OPENAI_API_KEY` GitHub secret.
 
 If you already use built-in Codex GitHub reviews, you may not want the pull request workflow as well, because it can create duplicate feedback.
+
+If you want structured release output, see [docs/RELEASE_NOTE_SCHEMA.md](docs/RELEASE_NOTE_SCHEMA.md). If you do not, delete `.github/release-note-schema.yml` and keep the simpler Markdown-only path.
 
 ## Presets
 

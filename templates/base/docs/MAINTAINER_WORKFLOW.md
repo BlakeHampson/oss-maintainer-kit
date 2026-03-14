@@ -30,6 +30,7 @@ If you are working alone, you are still the maintainer. That just means you are 
 
 - Ignore release automation until you actually need releases.
 - When you are ready, `codex-release-prep.yml` can generate a draft summary and checklist from recent commits.
+- If `.github/release-note-schema.yml` exists, the same workflow can also emit a structured YAML block for other tooling.
 - Review generated notes before publishing them.
 
 ## Repository instructions

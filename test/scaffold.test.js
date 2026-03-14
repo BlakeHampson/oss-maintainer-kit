@@ -173,6 +173,7 @@ test("first-public-repo preset leaves out the release workflow", async () => {
 
   assert.ok(result.created.includes(".github/workflows/codex-pr-review.yml"));
   assert.ok(result.created.includes(".github/workflows/repo-health.yml"));
+  assert.ok(!result.created.includes(".github/release-note-schema.yml"));
   assert.ok(!result.created.includes(".github/workflows/codex-release-prep.yml"));
 });
 
@@ -187,8 +188,14 @@ test("javascript-library preset injects package-specific review guidance", async
   });
 
   const agents = await readFile(path.join(targetDir, "AGENTS.md"), "utf8");
+  const schema = await readFile(
+    path.join(targetDir, ".github", "release-note-schema.yml"),
+    "utf8",
+  );
   assert.match(agents, /JavaScript or TypeScript package/);
   assert.match(agents, /CommonJS or ESM consumers/);
+  assert.match(schema, /schema_version: 1/);
+  assert.match(schema, /highlights:/);
 });
 
 test("python-package preset injects packaging guidance", async () => {
@@ -275,6 +282,7 @@ test("security-sensitive-repo preset excludes automation workflows and injects s
     targetDir: previewTarget,
   });
 
+  assert.ok(!result.created.includes(".github/release-note-schema.yml"));
   assert.ok(!result.created.includes(".github/workflows/codex-pr-review.yml"));
   assert.ok(!result.created.includes(".github/workflows/codex-release-prep.yml"));
 

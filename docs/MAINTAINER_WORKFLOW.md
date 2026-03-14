@@ -30,6 +30,7 @@ If you are working alone, you are still the maintainer. That just means you are 
 
 - You can ignore releases entirely until people are actually using tagged versions of your project.
 - When you are ready, `codex-release-prep.yml` can draft a summary and a checklist from recent commits.
+- If `.github/release-note-schema.yml` exists, the same workflow can also emit a structured YAML block for other tooling.
 - Always review generated release notes before publishing anything.
 
 ## Repository instructions

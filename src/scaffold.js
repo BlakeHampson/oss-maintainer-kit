@@ -18,7 +18,10 @@ export const presets = {
   "first-public-repo": {
     description:
       "Lighter starter for a newly public or solo-built repo. Keeps the review workflow, leaves out release prep.",
-    excludedPaths: [".github/workflows/codex-release-prep.yml"],
+    excludedPaths: [
+      ".github/release-note-schema.yml",
+      ".github/workflows/codex-release-prep.yml",
+    ],
     templateRoots: [
       templateRoot,
       path.resolve(templatesRoot, "presets", "first-public-repo"),
@@ -73,6 +76,7 @@ export const presets = {
     description:
       "Starter for repositories where trust boundaries, secrets, packaging, or incident risk require stricter review guidance.",
     excludedPaths: [
+      ".github/release-note-schema.yml",
       ".github/workflows/codex-pr-review.yml",
       ".github/workflows/codex-release-prep.yml",
     ],

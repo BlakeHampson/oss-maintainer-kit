@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.0 - 2026-03-15
+
+- add an optional `.github/release-note-schema.yml` scaffold for teams that want machine-readable release prep
+- update `codex-release-prep.yml` to emit structured YAML when that schema file exists
+- document when to keep or delete the schema file and how to adopt it safely
+
 ## 0.8.0 - 2026-03-14
 
 - add `--diff` support for `init --dry-run` so scaffold previews can show unified diffs

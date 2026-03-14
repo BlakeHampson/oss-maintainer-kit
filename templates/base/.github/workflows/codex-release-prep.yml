@@ -36,6 +36,9 @@ jobs:
             echo "2. a list of user-facing changes"
             echo "3. a maintainer checklist before shipping"
             echo "4. any obvious risks or follow-up items"
+            if [ -f .github/release-note-schema.yml ]; then
+              echo "5. a fenced YAML block that follows .github/release-note-schema.yml exactly"
+            fi
             echo
             echo "Repository: __PROJECT_NAME__"
             echo "Target version: ${{ github.event.inputs.version }}"
@@ -53,6 +56,14 @@ jobs:
               sed -n '1,220p' CHANGELOG.md
             else
               echo "No CHANGELOG.md found."
+            fi
+            if [ -f .github/release-note-schema.yml ]; then
+              echo
+              echo "Structured release-note schema:"
+              sed -n '1,220p' .github/release-note-schema.yml
+              echo
+              echo "If you include structured output, use a single fenced YAML block after the human-readable sections."
+              echo "Use only the keys declared in the schema and keep the values concise."
             fi
           } > release-prompt.txt
 
