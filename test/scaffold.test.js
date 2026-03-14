@@ -327,8 +327,12 @@ test("nextjs-app preset injects app and deploy guidance", async () => {
   assert.match(agents, /NEXT_PUBLIC_/);
   assert.match(startHere, /production build/);
   assert.match(startHere, /ci-smoke\.yml/);
-  assert.match(smokeWorkflow, /INSTALL_COMMAND: npm ci/);
-  assert.match(smokeWorkflow, /BUILD_COMMAND: npm run build/);
+  assert.match(startHere, /npm, pnpm, or yarn/);
+  assert.match(smokeWorkflow, /pnpm-lock\.yaml/);
+  assert.match(smokeWorkflow, /yarn\.lock/);
+  assert.match(smokeWorkflow, /packageManager/);
+  assert.match(smokeWorkflow, /corepack enable/);
+  assert.match(smokeWorkflow, /Detected starter defaults for:/);
   assert.match(smokeWorkflow, /SMOKE_COMMAND is empty/);
   assert.match(deployment, /rollback/);
   assert.match(architecture, /server components versus client components/);
@@ -354,6 +358,10 @@ test("python-service preset injects service and deploy guidance", async () => {
     path.join(targetDir, "docs", "RUNBOOK.md"),
     "utf8",
   );
+  const startHere = await readFile(
+    path.join(targetDir, "docs", "START_HERE.md"),
+    "utf8",
+  );
   const smokeWorkflow = await readFile(
     path.join(targetDir, ".github", "workflows", "ci-smoke.yml"),
     "utf8",
@@ -371,7 +379,11 @@ test("python-service preset injects service and deploy guidance", async () => {
   assert.match(agents, /rollback safety/);
   assert.match(workflow, /smoke test plan/);
   assert.match(workflow, /ci-smoke\.yml/);
-  assert.match(smokeWorkflow, /TEST_COMMAND: python -m pytest/);
+  assert.match(startHere, /uv/);
+  assert.match(smokeWorkflow, /uv\.lock/);
+  assert.match(smokeWorkflow, /requirements-dev\.txt/);
+  assert.match(smokeWorkflow, /uv run pytest/);
+  assert.match(smokeWorkflow, /Detected starter defaults for:/);
   assert.match(smokeWorkflow, /SMOKE_COMMAND is empty/);
   assert.match(runbook, /dashboards, logs, and alerts/);
   assert.match(architecture, /data stores, queues, and external services/);

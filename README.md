@@ -154,12 +154,12 @@ More detail: [docs/CASE_STUDY_SHULEDOCS.md](docs/CASE_STUDY_SHULEDOCS.md)
 The included GitHub Actions and workflow templates are optional:
 
 - `repo-health.yml` runs low-risk checks like `check-docs` in pull requests and does not require API keys
-- `ci-smoke.yml` is scaffolded in the `nextjs-app` and `python-service` presets as a conservative starting point for build, test, and smoke checks
+- `ci-smoke.yml` is scaffolded in the `nextjs-app` and `python-service` presets as a conservative starting point for build, test, and smoke checks, with stack-aware starter defaults for common repo shapes
 - `codex-pr-review.yml` posts a Codex review comment on pull requests
 - `codex-release-prep.yml` drafts a release summary and checklist
 - `release-note-schema.yml` lets that same release-prep flow also emit a machine-readable YAML block when you need it
 
-The app-oriented `ci-smoke.yml` templates are intentionally simple. They are starting points, not full pipelines, and should be edited to match your package manager, test runner, and critical flow.
+The app-oriented `ci-smoke.yml` templates are intentionally simple. They are starting points, not full pipelines, and should be edited to match your package manager, test runner, and critical flow. Today they auto-detect npm, pnpm, or yarn starters for app repos, and `uv`, `requirements.txt`, or editable `pyproject.toml` starters for Python service repos.
 
 The Codex workflows are intentionally conservative and require an `OPENAI_API_KEY` GitHub secret.
 

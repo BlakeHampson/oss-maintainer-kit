@@ -1,6 +1,7 @@
 # Optional workflow:
 # - Starting point for app-oriented CI in a Next.js repo
 # - Intentionally conservative: edit the commands to match your package manager and main user flow
+# - Starter defaults auto-detect npm, pnpm, or yarn from lockfiles and packageManager hints
 # - Safe default behavior: if package.json is missing, it exits successfully and tells you why
 name: App smoke checks
 
@@ -13,8 +14,8 @@ permissions:
   contents: read
 
 env:
-  INSTALL_COMMAND: npm ci
-  BUILD_COMMAND: npm run build
+  INSTALL_COMMAND: ""
+  BUILD_COMMAND: ""
   SMOKE_COMMAND: ""
 
 jobs:
@@ -39,14 +40,53 @@ jobs:
             exit 0
           fi
 
-          echo "Edit INSTALL_COMMAND, BUILD_COMMAND, and SMOKE_COMMAND to match your repo."
+          package_manager_hint="$(node --input-type=module -e "import fs from 'node:fs'; const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8')); process.stdout.write(packageJson.packageManager || '');")"
+          detected_manager="npm"
+          detected_install="npm install"
+          detected_build="npm run build"
+
+          if [ -f pnpm-lock.yaml ]; then
+            detected_manager="pnpm"
+            detected_install="pnpm install --frozen-lockfile"
+            detected_build="pnpm run build"
+          elif [ -f yarn.lock ]; then
+            detected_manager="yarn"
+            detected_install="yarn install --frozen-lockfile"
+            detected_build="yarn build"
+          elif [ -f package-lock.json ] || [ -f npm-shrinkwrap.json ]; then
+            detected_manager="npm"
+            detected_install="npm ci"
+            detected_build="npm run build"
+          elif [[ "$package_manager_hint" == pnpm@* ]]; then
+            detected_manager="pnpm"
+            detected_install="pnpm install"
+            detected_build="pnpm run build"
+          elif [[ "$package_manager_hint" == yarn@* ]]; then
+            detected_manager="yarn"
+            detected_install="yarn install"
+            detected_build="yarn build"
+          elif [[ "$package_manager_hint" == npm@* ]]; then
+            detected_manager="npm"
+            detected_install="npm install"
+            detected_build="npm run build"
+          fi
+
+          install_command="${INSTALL_COMMAND:-$detected_install}"
+          build_command="${BUILD_COMMAND:-$detected_build}"
+
+          if [[ "$detected_manager" == "pnpm" || "$detected_manager" == "yarn" ]]; then
+            corepack enable
+          fi
+
+          echo "Detected starter defaults for: $detected_manager"
+          echo "Edit INSTALL_COMMAND, BUILD_COMMAND, and SMOKE_COMMAND when your repo needs different behavior."
           echo "Current values:"
-          echo "  INSTALL_COMMAND=$INSTALL_COMMAND"
-          echo "  BUILD_COMMAND=$BUILD_COMMAND"
+          echo "  INSTALL_COMMAND=$install_command"
+          echo "  BUILD_COMMAND=$build_command"
           echo "  SMOKE_COMMAND=${SMOKE_COMMAND:-<empty>}"
 
-          eval "$INSTALL_COMMAND"
-          eval "$BUILD_COMMAND"
+          eval "$install_command"
+          eval "$build_command"
 
           if [ -z "${SMOKE_COMMAND}" ]; then
             echo "SMOKE_COMMAND is empty. Add one when you know the route or flow that should never break silently."

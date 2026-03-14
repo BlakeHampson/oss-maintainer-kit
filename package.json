@@ -1,6 +1,6 @@
 {
   "name": "oss-maintainer-kit",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "description": "Turn a code repository into a contributor-friendly public project with clear GitHub workflows.",
   "type": "module",
   "bin": {

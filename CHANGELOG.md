@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.14.0 - 2026-03-15
+
+- make the app smoke workflow starter auto-detect npm, pnpm, or yarn defaults from common repo hints
+- make the Python service smoke workflow starter auto-detect `uv`, `requirements.txt`, or editable `pyproject.toml` defaults
+- update docs so maintainers know when to trust the starter and when to replace it
+
 ## 0.13.0 - 2026-03-15
 
 - add `docs/BUNDLES.md` with a side-by-side comparison of `core`, `checks`, `preset-default`, and `full`

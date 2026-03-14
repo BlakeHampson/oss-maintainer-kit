@@ -12,10 +12,11 @@
 - lightweight CI smoke-test templates for the app-oriented presets
 - bundle profiles for scaffolding only the advanced files a team actually wants
 - bundle-comparison docs for choosing between `core`, `checks`, `preset-default`, and `full`
+- stack-aware starter defaults in `ci-smoke.yml` for npm, pnpm, yarn, `uv`, and `requirements.txt` repos
 - public case study derived from the `ShuleDocs` adoption work
 - `check-docs` for local Markdown link and anchor validation
 
 ## Next up
 
 - Add more presets for deployment targets and common stack conventions.
-- Add stack-aware variants for package-manager and runtime defaults in the smoke workflow starters.
+- Add example snippets or docs for customizing smoke commands once a team knows its critical flow.

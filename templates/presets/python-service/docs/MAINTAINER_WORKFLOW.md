@@ -16,7 +16,7 @@ That means maintainers should care about deploy behavior, runtime compatibility,
 - If a change touches config, schema, runtime entry points, deploy behavior, or external integrations, require validation notes in the PR.
 - Ask for a smoke test plan for endpoint, worker, or migration changes.
 - If `repo-health.yml` exists, it can catch docs drift, but it does not replace service tests, migration checks, or deploy validation.
-- If `ci-smoke.yml` exists, treat it as a starting point, not a full service pipeline. Keep its install, test, and smoke commands aligned with reality.
+- If `ci-smoke.yml` exists, treat it as a starting point, not a full service pipeline. It can auto-detect `uv`, `requirements.txt`, or editable `pyproject.toml` starter commands, but you should still keep them aligned with reality.
 - Keep `docs/RUNBOOK.md` and `docs/ARCHITECTURE.md` updated when service boundaries or recovery steps change.
 
 ## Releases and deploys
