@@ -9,6 +9,7 @@
 - dry-run diff previews for scaffolded files, including overwrite previews with `--force`
 - optional structured release-note schemas for teams that want machine-readable release prep
 - lightweight deployment, runbook, and architecture stubs for the app-oriented presets
+- lightweight CI smoke-test templates for the app-oriented presets
 - public case study derived from the `ShuleDocs` adoption work
 - `check-docs` for local Markdown link and anchor validation
 
@@ -16,4 +17,3 @@
 
 - Add more presets for deployment targets and common stack conventions.
 - Add a manifest or preset system for optional advanced files so teams can scaffold fewer extras by default.
-- Add lightweight CI smoke-test templates for the app-oriented presets.

@@ -11,9 +11,10 @@ It assumes your maintenance risk comes from routing, rendering boundaries, deplo
 3. Document which environment variables are server-only and which ones are safe to expose with `NEXT_PUBLIC_`.
 4. Keep the issue and pull request templates unless they are clearly wrong for your workflow.
 5. Update `docs/DEPLOYMENT.md` and `docs/ARCHITECTURE.md` so deploy and route assumptions are written down.
-6. Run a production build and one smoke test of the main route or user flow.
-7. Keep `.github/workflows/repo-health.yml` if you want docs and setup checks in pull requests.
-8. Add `OPENAI_API_KEY` only if you want the optional Codex GitHub Actions.
+6. Edit `.github/workflows/ci-smoke.yml` so the install, build, and smoke commands match your real app.
+7. Run a production build and one smoke test of the main route or user flow.
+8. Keep `.github/workflows/repo-health.yml` if you want docs and setup checks in pull requests.
+9. Add `OPENAI_API_KEY` only if you want the optional Codex GitHub Actions.
 
 ## What to pay extra attention to
 
@@ -30,4 +31,5 @@ It assumes your maintenance risk comes from routing, rendering boundaries, deplo
 - mention your local dev, test, and build commands in `AGENTS.md`
 - list the routes or flows that should never break silently
 - call out any deploy-time checks or preview-environment rules
+- replace the placeholder commands in `.github/workflows/ci-smoke.yml`
 - replace placeholder notes in `docs/DEPLOYMENT.md`, `docs/ARCHITECTURE.md`, and `app/README.md`

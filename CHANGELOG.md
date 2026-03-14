@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.0 - 2026-03-15
+
+- add editable `ci-smoke.yml` workflow starters to the `nextjs-app` and `python-service` presets
+- document that the smoke workflows are conservative starting points, not full CI pipelines
+- align the app-oriented example repos with the new smoke-check templates
+
 ## 0.10.0 - 2026-03-15
 
 - add deployment and architecture stubs to the `nextjs-app` preset

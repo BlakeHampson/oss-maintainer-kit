@@ -26,6 +26,7 @@ It ships with a tiny CLI and a practical starter pack:
 - `docs/START_HERE.md` so a new repo owner knows what to do first
 - GitHub issue and pull request templates
 - an optional repo-health workflow that runs low-risk checks like `check-docs`
+- app-oriented CI smoke-test workflow starters for Next.js apps and Python services
 - example Codex GitHub Action workflows for pull request review and release prep
 - a repeatable label sync command for first-pass GitHub triage labels
 - a local docs check command for broken Markdown links and anchors
@@ -149,9 +150,12 @@ More detail: [docs/CASE_STUDY_SHULEDOCS.md](docs/CASE_STUDY_SHULEDOCS.md)
 The included GitHub Actions and workflow templates are optional:
 
 - `repo-health.yml` runs low-risk checks like `check-docs` in pull requests and does not require API keys
+- `ci-smoke.yml` is scaffolded in the `nextjs-app` and `python-service` presets as a conservative starting point for build, test, and smoke checks
 - `codex-pr-review.yml` posts a Codex review comment on pull requests
 - `codex-release-prep.yml` drafts a release summary and checklist
 - `release-note-schema.yml` lets that same release-prep flow also emit a machine-readable YAML block when you need it
+
+The app-oriented `ci-smoke.yml` templates are intentionally simple. They are starting points, not full pipelines, and should be edited to match your package manager, test runner, and critical flow.
 
 The Codex workflows are intentionally conservative and require an `OPENAI_API_KEY` GitHub secret.
 
@@ -167,8 +171,8 @@ If you want structured release output, see [docs/RELEASE_NOTE_SCHEMA.md](docs/RE
 | `base` | general-purpose repos | includes both optional Codex workflows | scaffold from the main examples if you want the full starter |
 | `javascript-library` | JavaScript and TypeScript packages | adds package-focused review guidance and docs | [oss-maintainer-kit-javascript-example](https://github.com/BlakeHampson/oss-maintainer-kit-javascript-example) |
 | `python-package` | Python packages and tools | adds packaging and environment-focused guidance | [oss-maintainer-kit-python-example](https://github.com/BlakeHampson/oss-maintainer-kit-python-example) |
-| `nextjs-app` | Next.js web apps | adds routing, rendering, env var, deploy guidance, and lightweight architecture stubs | [oss-maintainer-kit-nextjs-example](https://github.com/BlakeHampson/oss-maintainer-kit-nextjs-example) |
-| `python-service` | Python APIs, workers, and services | adds runtime, config, migration, runbook guidance, and lightweight architecture stubs | [oss-maintainer-kit-python-service-example](https://github.com/BlakeHampson/oss-maintainer-kit-python-service-example) |
+| `nextjs-app` | Next.js web apps | adds routing, rendering, env var, deploy guidance, lightweight architecture stubs, and an editable app smoke workflow | [oss-maintainer-kit-nextjs-example](https://github.com/BlakeHampson/oss-maintainer-kit-nextjs-example) |
+| `python-service` | Python APIs, workers, and services | adds runtime, config, migration, runbook guidance, lightweight architecture stubs, and an editable service smoke workflow | [oss-maintainer-kit-python-service-example](https://github.com/BlakeHampson/oss-maintainer-kit-python-service-example) |
 | `docs-heavy` | docs, guides, and content-heavy repos | adds accuracy, examples, and structure-focused guidance | [oss-maintainer-kit-docs-example](https://github.com/BlakeHampson/oss-maintainer-kit-docs-example) |
 | `security-sensitive-repo` | repos where auth, secrets, packaging, or trust boundaries need stricter review discipline | adds security-oriented review guidance, risk-aware PR and issue templates, and disables optional Codex Actions by default | [packaging-heavy example](https://github.com/BlakeHampson/oss-maintainer-kit-security-sensitive-example)<br>[web-service example](https://github.com/BlakeHampson/oss-maintainer-kit-security-web-service-example) |
 

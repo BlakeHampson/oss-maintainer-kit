@@ -1,0 +1,56 @@
+# Optional workflow:
+# - Starting point for app-oriented CI in a Next.js repo
+# - Intentionally conservative: edit the commands to match your package manager and main user flow
+# - Safe default behavior: if package.json is missing, it exits successfully and tells you why
+name: App smoke checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  INSTALL_COMMAND: npm ci
+  BUILD_COMMAND: npm run build
+  SMOKE_COMMAND: ""
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 20
+
+      - name: Run build and smoke commands
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ ! -f package.json ]; then
+            echo "No package.json found. This template is meant for a real Next.js app repo."
+            echo "Keep, edit, or remove .github/workflows/ci-smoke.yml as needed."
+            exit 0
+          fi
+
+          echo "Edit INSTALL_COMMAND, BUILD_COMMAND, and SMOKE_COMMAND to match your repo."
+          echo "Current values:"
+          echo "  INSTALL_COMMAND=$INSTALL_COMMAND"
+          echo "  BUILD_COMMAND=$BUILD_COMMAND"
+          echo "  SMOKE_COMMAND=${SMOKE_COMMAND:-<empty>}"
+
+          eval "$INSTALL_COMMAND"
+          eval "$BUILD_COMMAND"
+
+          if [ -z "${SMOKE_COMMAND}" ]; then
+            echo "SMOKE_COMMAND is empty. Add one when you know the route or flow that should never break silently."
+            exit 0
+          fi
+
+          eval "$SMOKE_COMMAND"

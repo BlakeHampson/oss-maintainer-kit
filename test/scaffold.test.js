@@ -247,6 +247,10 @@ test("nextjs-app preset injects app and deploy guidance", async () => {
     path.join(targetDir, "docs", "DEPLOYMENT.md"),
     "utf8",
   );
+  const smokeWorkflow = await readFile(
+    path.join(targetDir, ".github", "workflows", "ci-smoke.yml"),
+    "utf8",
+  );
   const architecture = await readFile(
     path.join(targetDir, "docs", "ARCHITECTURE.md"),
     "utf8",
@@ -259,6 +263,10 @@ test("nextjs-app preset injects app and deploy guidance", async () => {
   assert.match(agents, /Next\.js app/);
   assert.match(agents, /NEXT_PUBLIC_/);
   assert.match(startHere, /production build/);
+  assert.match(startHere, /ci-smoke\.yml/);
+  assert.match(smokeWorkflow, /INSTALL_COMMAND: npm ci/);
+  assert.match(smokeWorkflow, /BUILD_COMMAND: npm run build/);
+  assert.match(smokeWorkflow, /SMOKE_COMMAND is empty/);
   assert.match(deployment, /rollback/);
   assert.match(architecture, /server components versus client components/);
   assert.match(appSurface, /critical user flows/);
@@ -283,6 +291,10 @@ test("python-service preset injects service and deploy guidance", async () => {
     path.join(targetDir, "docs", "RUNBOOK.md"),
     "utf8",
   );
+  const smokeWorkflow = await readFile(
+    path.join(targetDir, ".github", "workflows", "ci-smoke.yml"),
+    "utf8",
+  );
   const architecture = await readFile(
     path.join(targetDir, "docs", "ARCHITECTURE.md"),
     "utf8",
@@ -295,6 +307,9 @@ test("python-service preset injects service and deploy guidance", async () => {
   assert.match(agents, /Python service or API/);
   assert.match(agents, /rollback safety/);
   assert.match(workflow, /smoke test plan/);
+  assert.match(workflow, /ci-smoke\.yml/);
+  assert.match(smokeWorkflow, /TEST_COMMAND: python -m pytest/);
+  assert.match(smokeWorkflow, /SMOKE_COMMAND is empty/);
   assert.match(runbook, /dashboards, logs, and alerts/);
   assert.match(architecture, /data stores, queues, and external services/);
   assert.match(serviceSurface, /operationally critical/);

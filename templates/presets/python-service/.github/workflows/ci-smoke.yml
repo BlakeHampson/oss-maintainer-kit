@@ -1,0 +1,62 @@
+# Optional workflow:
+# - Starting point for service-oriented CI in a Python repo
+# - Intentionally conservative: edit the commands to match your dependency and test setup
+# - Safe default behavior: if no Python project files are present, it exits successfully and tells you why
+name: Service smoke checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: "3.12"
+  INSTALL_COMMAND: ""
+  TEST_COMMAND: python -m pytest
+  SMOKE_COMMAND: ""
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Run tests and smoke commands
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ ! -f pyproject.toml ] && [ ! -f requirements.txt ]; then
+            echo "No pyproject.toml or requirements.txt found. This template is meant for a real Python service repo."
+            echo "Keep, edit, or remove .github/workflows/ci-smoke.yml as needed."
+            exit 0
+          fi
+
+          python -m pip install --upgrade pip
+
+          if [ -n "$INSTALL_COMMAND" ]; then
+            eval "$INSTALL_COMMAND"
+          elif [ -f requirements.txt ]; then
+            python -m pip install -r requirements.txt
+          else
+            python -m pip install -e .
+          fi
+
+          if [ -n "${TEST_COMMAND}" ]; then
+            eval "$TEST_COMMAND"
+          fi
+
+          if [ -z "${SMOKE_COMMAND}" ]; then
+            echo "SMOKE_COMMAND is empty. Add one when you know the endpoint, worker, or job that should never break silently."
+            exit 0
+          fi
+
+          eval "$SMOKE_COMMAND"

@@ -16,10 +16,12 @@ That means maintainers should care about deploy behavior, runtime compatibility,
 - If a change touches config, schema, runtime entry points, deploy behavior, or external integrations, require validation notes in the PR.
 - Ask for a smoke test plan for endpoint, worker, or migration changes.
 - `repo-health.yml` can catch docs drift, but it does not replace service tests, migration checks, or deploy validation.
+- `ci-smoke.yml` is a starting point, not a full service pipeline. Keep its install, test, and smoke commands aligned with reality.
 - Keep `docs/RUNBOOK.md` and `docs/ARCHITECTURE.md` updated when service boundaries or recovery steps change.
 
 ## Releases and deploys
 
 - Run tests and one realistic smoke check before deploy.
+- Keep `.github/workflows/ci-smoke.yml` aligned with the dependency, test, and service checks you actually run.
 - Verify rollback or recovery notes for risky changes.
 - If a change affects config, health checks, migrations, or operational commands, update docs in the same pull request.
