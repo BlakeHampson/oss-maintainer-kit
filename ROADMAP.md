@@ -14,10 +14,11 @@
 - bundle-comparison docs for choosing between `core`, `checks`, `preset-default`, and `full`
 - stack-aware starter defaults in `ci-smoke.yml` for npm, pnpm, yarn, `uv`, and `requirements.txt` repos
 - smoke-command cookbook docs for app and service repos
+- bundle-aware preview output that separates core files from optional advanced files
 - public case study derived from the `ShuleDocs` adoption work
 - `check-docs` for local Markdown link and anchor validation
 
 ## Next up
 
 - Add more presets for deployment targets and common stack conventions.
-- Add a bundle-aware preview command or report so users can compare output without reading docs first.
+- Add preset-aware summaries for generated docs and workflow files so users can see what each preset changes at a glance.

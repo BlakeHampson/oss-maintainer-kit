@@ -199,6 +199,8 @@ npx oss-maintainer-kit init ../my-repo --preset security-sensitive-repo --bundle
 
 `--dry-run --diff` works the same way with bundle selection. It previews exactly which optional files would appear or disappear before you write anything.
 
+`--dry-run` now also groups preview output into core files versus optional advanced files, so the bundle impact is easier to scan in the terminal.
+
 For the side-by-side file matrix and a concrete `nextjs-app` comparison, see [docs/BUNDLES.md](docs/BUNDLES.md).
 
 ## Presets

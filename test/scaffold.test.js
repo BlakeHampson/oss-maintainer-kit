@@ -1,11 +1,22 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { execFile } from "node:child_process";
 import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { promisify } from "node:util";
 
 import { checkDocs, collectAnchors } from "../src/docs.js";
-import { explainKit, initKit, parseCliArgs, replaceTokens, usage } from "../src/scaffold.js";
+import {
+  explainKit,
+  groupPathsByOptionality,
+  initKit,
+  parseCliArgs,
+  replaceTokens,
+  usage,
+} from "../src/scaffold.js";
+
+const execFileAsync = promisify(execFile);
 
 test("parseCliArgs handles init flags", () => {
   const parsed = parseCliArgs([
@@ -61,6 +72,21 @@ test("collectAnchors handles duplicate headings", () => {
   assert.ok(anchors.has("intro"));
   assert.ok(anchors.has("setup"));
   assert.ok(anchors.has("setup-1"));
+});
+
+test("groupPathsByOptionality separates core and optional advanced files", () => {
+  const grouped = groupPathsByOptionality([
+    "AGENTS.md",
+    ".github/workflows/repo-health.yml",
+    "docs/START_HERE.md",
+    ".github/release-note-schema.yml",
+  ]);
+
+  assert.deepEqual(grouped.core, ["AGENTS.md", "docs/START_HERE.md"]);
+  assert.deepEqual(grouped.optional, [
+    ".github/workflows/repo-health.yml",
+    ".github/release-note-schema.yml",
+  ]);
 });
 
 test("usage and explainKit describe the beginner path", () => {
@@ -163,6 +189,36 @@ test("initKit dry-run diff previews new files", async () => {
   assert.ok(agentsDiff);
   assert.match(agentsDiff.diff, /diff --git a\/AGENTS\.md b\/AGENTS\.md/);
   assert.match(agentsDiff.diff, /\+\# AGENTS\.md/);
+});
+
+test("cli dry-run preview groups core and optional files separately", async () => {
+  const targetDir = await mkdtemp(path.join(os.tmpdir(), "oss-maintainer-kit-cli-"));
+
+  const { stdout } = await execFileAsync(
+    process.execPath,
+    [
+      "./bin/maintainer-kit.js",
+      "init",
+      targetDir,
+      "--preset",
+      "nextjs-app",
+      "--bundle",
+      "checks",
+      "--dry-run",
+    ],
+    {
+      cwd: "/Users/blake/Documents/Codex project/oss-maintainer-kit",
+    },
+  );
+
+  assert.match(stdout, /Preview groups:/);
+  assert.match(stdout, /core files: 11/);
+  assert.match(stdout, /optional advanced files: 2/);
+  assert.match(stdout, /Core files that would be written:/);
+  assert.match(stdout, /Optional advanced files that would be written:/);
+  assert.match(stdout, /- AGENTS\.md/);
+  assert.match(stdout, /- \.github\/workflows\/repo-health\.yml/);
+  assert.match(stdout, /- \.github\/workflows\/ci-smoke\.yml/);
 });
 
 test("first-public-repo preset leaves out the release workflow", async () => {

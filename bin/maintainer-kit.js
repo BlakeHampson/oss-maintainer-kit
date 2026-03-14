@@ -3,7 +3,13 @@
 import path from "node:path";
 import process from "node:process";
 
-import { explainKit, initKit, parseCliArgs, usage } from "../src/scaffold.js";
+import {
+  explainKit,
+  groupPathsByOptionality,
+  initKit,
+  parseCliArgs,
+  usage,
+} from "../src/scaffold.js";
 import { checkDocs } from "../src/docs.js";
 import { syncLabels } from "../src/labels.js";
 
@@ -117,10 +123,31 @@ async function main() {
   console.log(`Skipped: ${result.skipped.length}`);
 
   if (result.created.length > 0) {
+    const groupedCreated = groupPathsByOptionality(result.created);
+
     console.log("");
-    console.log(args.dryRun ? "Files that would be written:" : "Files written:");
-    for (const entry of result.created) {
-      console.log(`- ${entry}`);
+    console.log(args.dryRun ? "Preview groups:" : "Written file groups:");
+    console.log(`- core files: ${groupedCreated.core.length}`);
+    console.log(`- optional advanced files: ${groupedCreated.optional.length}`);
+
+    if (groupedCreated.core.length > 0) {
+      console.log("");
+      console.log(args.dryRun ? "Core files that would be written:" : "Core files written:");
+      for (const entry of groupedCreated.core) {
+        console.log(`- ${entry}`);
+      }
+    }
+
+    if (groupedCreated.optional.length > 0) {
+      console.log("");
+      console.log(
+        args.dryRun
+          ? "Optional advanced files that would be written:"
+          : "Optional advanced files written:",
+      );
+      for (const entry of groupedCreated.optional) {
+        console.log(`- ${entry}`);
+      }
     }
   }
 

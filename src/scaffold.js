@@ -16,6 +16,25 @@ const optionalAdvancedPaths = [
   ".github/workflows/ci-smoke.yml",
 ];
 
+export function isOptionalAdvancedPath(relativePath) {
+  return optionalAdvancedPaths.includes(relativePath);
+}
+
+export function groupPathsByOptionality(paths) {
+  const core = [];
+  const optional = [];
+
+  for (const entry of paths) {
+    if (isOptionalAdvancedPath(entry)) {
+      optional.push(entry);
+    } else {
+      core.push(entry);
+    }
+  }
+
+  return { core, optional };
+}
+
 export const presets = {
   base: {
     description: "Full starter with issue templates, PR template, and both optional Codex workflows.",

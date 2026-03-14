@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.16.0 - 2026-03-15
+
+- group `init --dry-run` preview output into core files versus optional advanced files
+- make bundle impact easier to scan in terminal output for first-time maintainers
+- add CLI-output tests that verify the grouped preview behavior
+
 ## 0.15.0 - 2026-03-15
 
 - add `docs/SMOKE_COMMANDS.md` with concrete starter patterns for Next.js and Python service smoke checks
