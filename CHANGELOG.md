@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.1 - 2026-03-14
+
+- add a generator for repo-specific example social-preview cards
+- replace the example README preview assets with richer PNG social cards
+- prepare GitHub-ready social preview assets for the example repo family
+
 ## 0.7.0 - 2026-03-14
 
 - add `nextjs-app` and `python-service` presets for deployable application and service repos

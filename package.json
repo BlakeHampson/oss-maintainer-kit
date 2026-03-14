@@ -1,6 +1,6 @@
 {
   "name": "oss-maintainer-kit",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Turn a code repository into a contributor-friendly public project with clear GitHub workflows.",
   "type": "module",
   "bin": {
@@ -19,7 +19,8 @@
     "check": "node --test",
     "pack:check": "npm pack --dry-run",
     "docs:check": "node ./bin/maintainer-kit.js check-docs .",
-    "demo:render": "python3 ./scripts/render_demo_gif.py"
+    "demo:render": "python3 ./scripts/render_demo_gif.py",
+    "previews:render": "python3 ./scripts/render_example_social_previews.py"
   },
   "repository": {
     "type": "git",

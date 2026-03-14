@@ -129,6 +129,7 @@ If you want a concrete generated repo to inspect, start with one of these:
 This kit is already being used in two different ways:
 
 - Public examples: there are now 8 live example repos covering beginner, package, app, service, docs, and security-sensitive repository shapes, so you can inspect the generated files instead of guessing what a preset does.
+- Social surface: each public example repo now ships with a repo-specific social-preview card, so the README hero and upload-ready share asset are deliberate instead of default.
 - Private security-sensitive repo: `ShuleDocs`, a secure Microsoft Office add-in project, is using the kit for maintainer onboarding, repo-specific `AGENTS.md` guidance, and GitHub issue and pull request templates without enabling the optional Codex Actions by default.
 
 That split is intentional. The same kit should be useful for a beginner opening a repo to contributors and for a more security-sensitive project that wants better review discipline without immediately adding more automation.
@@ -218,6 +219,7 @@ Run tests:
 ```bash
 npm test
 npm run docs:check
+npm run previews:render
 ```
 
 Smoke check the CLI:
