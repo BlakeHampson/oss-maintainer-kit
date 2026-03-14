@@ -51,6 +51,18 @@ export const presets = {
       path.resolve(templatesRoot, "presets", "docs-heavy"),
     ],
   },
+  "security-sensitive-repo": {
+    description:
+      "Starter for repositories where trust boundaries, secrets, packaging, or incident risk require stricter review guidance.",
+    excludedPaths: [
+      ".github/workflows/codex-pr-review.yml",
+      ".github/workflows/codex-release-prep.yml",
+    ],
+    templateRoots: [
+      templateRoot,
+      path.resolve(templatesRoot, "presets", "security-sensitive-repo"),
+    ],
+  },
 };
 
 function formatPresetList() {

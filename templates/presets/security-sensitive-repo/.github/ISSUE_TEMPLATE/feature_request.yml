@@ -1,0 +1,42 @@
+name: Feature request
+description: Suggest an improvement for a repository where trust boundaries and operational clarity matter.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: What are you trying to get done?
+      description: Start with the job to be done.
+    validations:
+      required: true
+  - type: textarea
+    id: gap
+    attributes:
+      label: What is missing or frustrating today?
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which area would this change affect?
+      options:
+        - docs and guidance
+        - auth, secret, or crypto behavior
+        - installer, update, or rollback flow
+        - runtime, deployment, or boundary behavior
+        - packaging, release, or manifest behavior
+        - logging, telemetry, or crash behavior
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What change would help?
+      description: Rough notes are enough.
+  - type: textarea
+    id: risks
+    attributes:
+      label: What should we be careful not to break?
+      description: Mention trust boundaries, rollback, recovery, offline behavior, or auditability if relevant.

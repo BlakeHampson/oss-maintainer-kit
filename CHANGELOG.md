@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0 - 2026-03-14
+
+- add the `security-sensitive-repo` preset with stricter review guidance and no optional Codex Actions by default
+- add a public `ShuleDocs`-derived case study for applying the kit in a security-sensitive repo
+- add a public example repository for the new preset and link it from the main README
+
 ## 0.3.2 - 2026-03-13
 
 - add an adoption snapshot section to the main README

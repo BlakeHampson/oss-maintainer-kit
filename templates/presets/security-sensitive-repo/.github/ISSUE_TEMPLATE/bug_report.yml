@@ -1,0 +1,53 @@
+name: Bug report
+description: Report a problem in a security-sensitive, packaging-sensitive, or trust-boundary-sensitive part of the repo.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: What were you trying to do?
+      description: Start with the user or operator goal.
+    validations:
+      required: true
+  - type: textarea
+    id: happened
+    attributes:
+      label: What happened instead?
+      description: Include what you expected if that helps.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which area is affected?
+      options:
+        - docs only
+        - auth, secret, or crypto behavior
+        - installer, update, or rollback flow
+        - runtime, deployment, or boundary behavior
+        - packaging, release, or manifest behavior
+        - logging, telemetry, or crash behavior
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: How can someone else reproduce it?
+      placeholder: |
+        1. Run...
+        2. Open...
+        3. Observe...
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Why does this matter?
+      description: Note user impact, operator impact, or security impact.
+  - type: textarea
+    id: environment
+    attributes:
+      label: Anything else that might help?
+      description: OS, runtime, branch, environment details, logs, or artifact names.

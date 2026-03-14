@@ -9,6 +9,7 @@
 [![JS example](https://img.shields.io/badge/example-javascript--library-f59e0b)](https://github.com/BlakeHampson/oss-maintainer-kit-javascript-example)
 [![Python example](https://img.shields.io/badge/example-python--package-2563eb)](https://github.com/BlakeHampson/oss-maintainer-kit-python-example)
 [![Docs example](https://img.shields.io/badge/example-docs--heavy-16a34a)](https://github.com/BlakeHampson/oss-maintainer-kit-docs-example)
+[![Security example](https://img.shields.io/badge/example-security--sensitive--repo-dc2626)](https://github.com/BlakeHampson/oss-maintainer-kit-security-sensitive-example)
 
 Turn a code repository into a public project that other people can understand, review, and contribute to.
 
@@ -104,6 +105,7 @@ If you want a concrete generated repo to inspect, start with one of these:
 - [oss-maintainer-kit-javascript-example](https://github.com/BlakeHampson/oss-maintainer-kit-javascript-example) for `javascript-library`
 - [oss-maintainer-kit-python-example](https://github.com/BlakeHampson/oss-maintainer-kit-python-example) for `python-package`
 - [oss-maintainer-kit-docs-example](https://github.com/BlakeHampson/oss-maintainer-kit-docs-example) for `docs-heavy`
+- [oss-maintainer-kit-security-sensitive-example](https://github.com/BlakeHampson/oss-maintainer-kit-security-sensitive-example) for `security-sensitive-repo`
 
 ## Suggested first hour after setup
 
@@ -121,6 +123,8 @@ This kit is already being used in two different ways:
 - Private security-sensitive repo: `ShuleDocs`, a secure Microsoft Office add-in project, is using the kit for maintainer onboarding, repo-specific `AGENTS.md` guidance, and GitHub issue and pull request templates without enabling the optional Codex Actions by default.
 
 That split is intentional. The same kit should be useful for a beginner opening a repo to contributors and for a more security-sensitive project that wants better review discipline without immediately adding more automation.
+
+More detail: [docs/CASE_STUDY_SHULEDOCS.md](docs/CASE_STUDY_SHULEDOCS.md)
 
 ## Optional AI workflows
 
@@ -142,6 +146,7 @@ If you already use built-in Codex GitHub reviews, you may not want the pull requ
 | `javascript-library` | JavaScript and TypeScript packages | adds package-focused review guidance and docs | [oss-maintainer-kit-javascript-example](https://github.com/BlakeHampson/oss-maintainer-kit-javascript-example) |
 | `python-package` | Python packages and tools | adds packaging and environment-focused guidance | [oss-maintainer-kit-python-example](https://github.com/BlakeHampson/oss-maintainer-kit-python-example) |
 | `docs-heavy` | docs, guides, and content-heavy repos | adds accuracy, examples, and structure-focused guidance | [oss-maintainer-kit-docs-example](https://github.com/BlakeHampson/oss-maintainer-kit-docs-example) |
+| `security-sensitive-repo` | repos where auth, secrets, packaging, or trust boundaries need stricter review discipline | adds security-oriented review guidance, risk-aware PR and issue templates, and disables optional Codex Actions by default | [oss-maintainer-kit-security-sensitive-example](https://github.com/BlakeHampson/oss-maintainer-kit-security-sensitive-example) |
 
 The `first-public-repo` preset intentionally leaves out release-prep automation. Most new repos do not need it yet.
 

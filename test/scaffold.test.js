@@ -48,6 +48,7 @@ test("usage and explainKit describe the beginner path", () => {
   assert.match(usage(), /javascript-library/);
   assert.match(usage(), /python-package/);
   assert.match(usage(), /docs-heavy/);
+  assert.match(usage(), /security-sensitive-repo/);
   assert.match(usage(), /sync-labels/);
   assert.match(explainKit(), /docs\/START_HERE\.md/);
 });
@@ -178,4 +179,37 @@ test("docs-heavy preset injects docs-first guidance", async () => {
   const agents = await readFile(path.join(targetDir, "AGENTS.md"), "utf8");
   assert.match(agents, /docs-heavy repository/);
   assert.match(agents, /Broken links, misleading examples/);
+});
+
+test("security-sensitive-repo preset excludes automation workflows and injects security guidance", async () => {
+  const targetDir = await mkdtemp(path.join(os.tmpdir(), "oss-maintainer-kit-"));
+  const previewTarget = path.join(targetDir, "preview-repo");
+
+  const result = await initKit({
+    dryRun: true,
+    maintainerName: "Jane Doe",
+    preset: "security-sensitive-repo",
+    repoName: "demo-repo",
+    targetDir: previewTarget,
+  });
+
+  assert.ok(!result.created.includes(".github/workflows/codex-pr-review.yml"));
+  assert.ok(!result.created.includes(".github/workflows/codex-release-prep.yml"));
+
+  await initKit({
+    maintainerName: "Jane Doe",
+    preset: "security-sensitive-repo",
+    repoName: "demo-repo",
+    targetDir,
+  });
+
+  const agents = await readFile(path.join(targetDir, "AGENTS.md"), "utf8");
+  const prTemplate = await readFile(
+    path.join(targetDir, ".github", "PULL_REQUEST_TEMPLATE.md"),
+    "utf8",
+  );
+
+  assert.match(agents, /security-sensitive/);
+  assert.match(agents, /trust boundaries/);
+  assert.match(prTemplate, /auth, secret, or crypto behavior/);
 });
