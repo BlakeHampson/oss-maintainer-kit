@@ -86,6 +86,10 @@ async function main() {
     throw new Error(`Unknown command: ${args.command}`);
   }
 
+  if (args.diff && !args.dryRun) {
+    throw new Error("--diff can only be used with --dry-run");
+  }
+
   const targetDir = path.resolve(process.cwd(), args.targetDir ?? ".");
   const repoName = args.repoName ?? path.basename(targetDir);
   const maintainerName = args.maintainerName ?? "Project Owner";
@@ -96,6 +100,7 @@ async function main() {
     maintainerName,
     preset: args.preset,
     repoName,
+    showDiff: args.diff,
     targetDir,
   });
 
@@ -103,12 +108,15 @@ async function main() {
     `${args.dryRun ? "Previewed" : "Initialized"} OSS Maintainer Kit in ${targetDir}`,
   );
   console.log(`Preset: ${args.preset}`);
-  console.log(`${args.dryRun ? "Would create" : "Created"}: ${result.created.length}`);
+  console.log(`${args.dryRun ? "Would write" : "Written"}: ${result.created.length}`);
+  console.log(`Create: ${result.toCreate.length}`);
+  console.log(`Update: ${result.toUpdate.length}`);
+  console.log(`Unchanged: ${result.unchanged.length}`);
   console.log(`Skipped: ${result.skipped.length}`);
 
   if (result.created.length > 0) {
     console.log("");
-    console.log(args.dryRun ? "Files that would be created:" : "Files created:");
+    console.log(args.dryRun ? "Files that would be written:" : "Files written:");
     for (const entry of result.created) {
       console.log(`- ${entry}`);
     }
@@ -122,12 +130,26 @@ async function main() {
     }
   }
 
+  if (args.dryRun && args.diff && result.diffs.length > 0) {
+    console.log("");
+    console.log("Diff preview:");
+    for (const { diff } of result.diffs) {
+      console.log("");
+      console.log(diff);
+    }
+  }
+
   console.log("");
   console.log(
     args.dryRun
       ? "This was a preview only. No files were written."
       : "This added repository setup files, not application code.",
   );
+  if (args.dryRun && result.skipped.length > 0 && !args.force) {
+    console.log(
+      "Use --force with --dry-run --diff if you want to preview overwrites of existing files.",
+    );
+  }
   console.log(
     args.dryRun
       ? "First file to read after you apply the kit: docs/START_HERE.md"

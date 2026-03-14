@@ -113,7 +113,7 @@ explain, and contribute to.
 
 Usage:
   ${commandName} explain
-  ${commandName} init [target-directory] [--repo-name name] [--maintainer "Name"] [--preset name] [--force] [--dry-run]
+  ${commandName} init [target-directory] [--repo-name name] [--maintainer "Name"] [--preset name] [--force] [--dry-run] [--diff]
   ${commandName} sync-labels OWNER/REPO [--manifest name] [--dry-run]
   ${commandName} check-docs [target-directory]
 
@@ -123,7 +123,7 @@ ${formatPresetList()}
 Examples:
   ${commandName} explain
   ${commandName} init .
-  ${commandName} init ../my-repo --preset first-public-repo --dry-run
+  ${commandName} init ../my-repo --preset first-public-repo --dry-run --diff
   ${commandName} init ../my-repo --repo-name my-repo --maintainer "Jane Doe"
   ${commandName} init ../my-repo --dry-run
   ${commandName} sync-labels BlakeHampson/oss-maintainer-kit --dry-run
@@ -154,7 +154,7 @@ What it does not do:
 - it does not replace tests or human judgment
 
 If you are new to GitHub or open source, start with:
-1. ${commandName} init ../my-repo --preset first-public-repo --dry-run
+1. ${commandName} init ../my-repo --preset first-public-repo --dry-run --diff
 2. ${commandName} init ../my-repo --repo-name my-repo --maintainer "Your Name" --preset first-public-repo
 3. open docs/START_HERE.md in the generated repo
 4. optionally run ${commandName} sync-labels OWNER/REPO --dry-run to standardize labels
@@ -167,6 +167,7 @@ You can safely ignore the release workflow until you actually start shipping ver
 export function parseCliArgs(argv) {
   const result = {
     command: argv[0],
+    diff: false,
     dryRun: false,
     force: false,
     help: false,
@@ -202,6 +203,11 @@ export function parseCliArgs(argv) {
 
     if (value === "--dry-run") {
       result.dryRun = true;
+      continue;
+    }
+
+    if (value === "--diff") {
+      result.diff = true;
       continue;
     }
 
@@ -277,68 +283,223 @@ async function pathExists(targetPath) {
   }
 }
 
-async function copyTemplateDirectory({
-  baseTarget,
-  created,
+function splitLines(content) {
+  const normalized = content.replaceAll("\r\n", "\n");
+
+  if (normalized === "") {
+    return [];
+  }
+
+  const lines = normalized.split("\n");
+
+  if (normalized.endsWith("\n")) {
+    lines.pop();
+  }
+
+  return lines;
+}
+
+function buildLineOperations(oldLines, newLines) {
+  const dp = Array.from({ length: oldLines.length + 1 }, () =>
+    Array(newLines.length + 1).fill(0),
+  );
+
+  for (let oldIndex = oldLines.length - 1; oldIndex >= 0; oldIndex -= 1) {
+    for (let newIndex = newLines.length - 1; newIndex >= 0; newIndex -= 1) {
+      if (oldLines[oldIndex] === newLines[newIndex]) {
+        dp[oldIndex][newIndex] = dp[oldIndex + 1][newIndex + 1] + 1;
+      } else {
+        dp[oldIndex][newIndex] = Math.max(
+          dp[oldIndex + 1][newIndex],
+          dp[oldIndex][newIndex + 1],
+        );
+      }
+    }
+  }
+
+  const operations = [];
+  let oldIndex = 0;
+  let newIndex = 0;
+
+  while (oldIndex < oldLines.length && newIndex < newLines.length) {
+    if (oldLines[oldIndex] === newLines[newIndex]) {
+      operations.push({ type: "context", line: oldLines[oldIndex] });
+      oldIndex += 1;
+      newIndex += 1;
+      continue;
+    }
+
+    if (dp[oldIndex + 1][newIndex] >= dp[oldIndex][newIndex + 1]) {
+      operations.push({ type: "remove", line: oldLines[oldIndex] });
+      oldIndex += 1;
+    } else {
+      operations.push({ type: "add", line: newLines[newIndex] });
+      newIndex += 1;
+    }
+  }
+
+  while (oldIndex < oldLines.length) {
+    operations.push({ type: "remove", line: oldLines[oldIndex] });
+    oldIndex += 1;
+  }
+
+  while (newIndex < newLines.length) {
+    operations.push({ type: "add", line: newLines[newIndex] });
+    newIndex += 1;
+  }
+
+  return operations;
+}
+
+function formatRange(start, count) {
+  return `${start},${count}`;
+}
+
+function buildUnifiedDiff({ newContent, oldContent, relativePath }) {
+  const oldLines = splitLines(oldContent ?? "");
+  const newLines = splitLines(newContent);
+  const operations = buildLineOperations(oldLines, newLines);
+  const changeIndexes = operations
+    .map((operation, index) => ({ operation, index }))
+    .filter(({ operation }) => operation.type !== "context")
+    .map(({ index }) => index);
+
+  if (changeIndexes.length === 0) {
+    return "";
+  }
+
+  const contextLines = 3;
+  const hunkRanges = [];
+
+  for (const changeIndex of changeIndexes) {
+    const start = Math.max(0, changeIndex - contextLines);
+    const end = Math.min(operations.length, changeIndex + contextLines + 1);
+    const previous = hunkRanges[hunkRanges.length - 1];
+
+    if (previous && start <= previous.end) {
+      previous.end = Math.max(previous.end, end);
+    } else {
+      hunkRanges.push({ start, end });
+    }
+  }
+
+  const lines = [
+    `diff --git a/${relativePath} b/${relativePath}`,
+  ];
+
+  if (oldContent === null) {
+    lines.push("new file mode 100644");
+    lines.push("--- /dev/null");
+  } else {
+    lines.push(`--- a/${relativePath}`);
+  }
+  lines.push(`+++ b/${relativePath}`);
+
+  for (const { start, end } of hunkRanges) {
+    let oldStart = 1;
+    let newStart = 1;
+
+    for (let index = 0; index < start; index += 1) {
+      if (operations[index].type !== "add") {
+        oldStart += 1;
+      }
+      if (operations[index].type !== "remove") {
+        newStart += 1;
+      }
+    }
+
+    let oldCount = 0;
+    let newCount = 0;
+
+    for (let index = start; index < end; index += 1) {
+      if (operations[index].type !== "add") {
+        oldCount += 1;
+      }
+      if (operations[index].type !== "remove") {
+        newCount += 1;
+      }
+    }
+
+    if (oldCount === 0) {
+      oldStart = Math.max(0, oldStart - 1);
+    }
+    if (newCount === 0) {
+      newStart = Math.max(0, newStart - 1);
+    }
+
+    lines.push(
+      `@@ -${formatRange(oldStart, oldCount)} +${formatRange(newStart, newCount)} @@`,
+    );
+
+    for (let index = start; index < end; index += 1) {
+      const operation = operations[index];
+      const prefix =
+        operation.type === "context" ? " " : operation.type === "add" ? "+" : "-";
+      lines.push(`${prefix}${operation.line}`);
+    }
+  }
+
+  return lines.join("\n");
+}
+
+async function collectTemplateDirectory({
   currentSource,
-  currentTarget,
-  createdSet,
-  dryRun,
+  files,
   excludedPaths,
-  force,
-  skipped,
+  relativeRoot = "",
   tokens,
 }) {
-  if (!dryRun) {
-    await mkdir(currentTarget, { recursive: true });
-  }
   const entries = await readdir(currentSource, { withFileTypes: true });
 
   for (const entry of entries) {
     const sourcePath = path.join(currentSource, entry.name);
-    const targetPath = path.join(currentTarget, entry.name);
-    const relativeTargetPath = normalizeRelativePath(path.relative(baseTarget, targetPath));
+    const relativeTargetPath = normalizeRelativePath(
+      path.join(relativeRoot, entry.name),
+    );
 
     if (excludedPaths.has(relativeTargetPath)) {
       continue;
     }
 
     if (entry.isDirectory()) {
-      await copyTemplateDirectory({
-        baseTarget,
-        created,
+      await collectTemplateDirectory({
         currentSource: sourcePath,
-        currentTarget: targetPath,
-        createdSet,
-        dryRun,
+        files,
         excludedPaths,
-        force,
-        skipped,
+        relativeRoot: relativeTargetPath,
         tokens,
       });
       continue;
     }
 
-    const alreadyCreatedInRun = createdSet.has(relativeTargetPath);
-
-    if (!alreadyCreatedInRun && !force && (await pathExists(targetPath))) {
-      skipped.push(relativeTargetPath);
-      continue;
-    }
-
     const rawContent = await readFile(sourcePath, "utf8");
     const rendered = replaceTokens(rawContent, tokens);
-
-    if (!dryRun) {
-      await mkdir(path.dirname(targetPath), { recursive: true });
-      await writeFile(targetPath, rendered, "utf8");
-    }
-
-    if (!alreadyCreatedInRun) {
-      created.push(relativeTargetPath);
-      createdSet.add(relativeTargetPath);
-    }
+    files.set(relativeTargetPath, rendered);
   }
+}
+
+async function collectRenderedTemplates({ presetConfig, tokens }) {
+  const files = new Map();
+  const excludedPaths = new Set(presetConfig.excludedPaths);
+
+  for (const currentTemplateRoot of presetConfig.templateRoots) {
+    await collectTemplateDirectory({
+      currentSource: currentTemplateRoot,
+      files,
+      excludedPaths,
+      tokens,
+    });
+  }
+
+  return files;
+}
+
+async function readExistingContent(targetPath) {
+  if (!(await pathExists(targetPath))) {
+    return null;
+  }
+
+  return readFile(targetPath, "utf8");
 }
 
 export async function initKit({
@@ -347,10 +508,13 @@ export async function initKit({
   maintainerName,
   preset = "base",
   repoName,
+  showDiff = false,
   targetDir,
 }) {
   const created = [];
-  const createdSet = new Set();
+  const toCreate = [];
+  const toUpdate = [];
+  const unchanged = [];
   const skipped = [];
   const presetConfig = getPresetConfig(preset);
 
@@ -363,20 +527,57 @@ export async function initKit({
     await mkdir(targetDir, { recursive: true });
   }
 
-  for (const currentTemplateRoot of presetConfig.templateRoots) {
-    await copyTemplateDirectory({
-      baseTarget: targetDir,
-      created,
-      currentSource: currentTemplateRoot,
-      currentTarget: targetDir,
-      createdSet,
-      dryRun,
-      excludedPaths: new Set(presetConfig.excludedPaths),
-      force,
-      skipped,
-      tokens,
-    });
+  const renderedFiles = await collectRenderedTemplates({ presetConfig, tokens });
+  const operations = [];
+  const diffs = [];
+
+  for (const relativeTargetPath of [...renderedFiles.keys()].sort()) {
+    const targetPath = path.join(targetDir, relativeTargetPath);
+    const rendered = renderedFiles.get(relativeTargetPath);
+    const existingContent = await readExistingContent(targetPath);
+
+    if (existingContent !== null && !force) {
+      skipped.push(relativeTargetPath);
+      operations.push({ path: relativeTargetPath, type: "skip" });
+      continue;
+    }
+
+    let operationType = "create";
+
+    if (existingContent !== null) {
+      operationType = existingContent === rendered ? "unchanged" : "update";
+    }
+
+    if (operationType === "create") {
+      toCreate.push(relativeTargetPath);
+      created.push(relativeTargetPath);
+    } else if (operationType === "update") {
+      toUpdate.push(relativeTargetPath);
+      created.push(relativeTargetPath);
+    } else {
+      unchanged.push(relativeTargetPath);
+    }
+
+    let diff = "";
+
+    if (showDiff && (operationType === "create" || operationType === "update")) {
+      diff = buildUnifiedDiff({
+        newContent: rendered,
+        oldContent: existingContent,
+        relativePath: relativeTargetPath,
+      });
+      if (diff) {
+        diffs.push({ path: relativeTargetPath, type: operationType, diff });
+      }
+    }
+
+    operations.push({ path: relativeTargetPath, type: operationType, diff });
+
+    if (!dryRun && (operationType === "create" || operationType === "update")) {
+      await mkdir(path.dirname(targetPath), { recursive: true });
+      await writeFile(targetPath, rendered, "utf8");
+    }
   }
 
-  return { created, skipped };
+  return { created, diffs, operations, skipped, toCreate, toUpdate, unchanged };
 }

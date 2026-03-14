@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.0 - 2026-03-14
+
+- add `--diff` support for `init --dry-run` so scaffold previews can show unified diffs
+- preview overwrite changes cleanly when `--force --dry-run --diff` is used on an existing repo
+- update the README and roadmap so the new preview flow is the default recommendation
+
 ## 0.7.1 - 2026-03-14
 
 - add a generator for repo-specific example social-preview cards

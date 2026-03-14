@@ -87,7 +87,8 @@ npx oss-maintainer-kit init ../my-repo \
   --repo-name my-repo \
   --maintainer "Your Name" \
   --preset first-public-repo \
-  --dry-run
+  --dry-run \
+  --diff
 ```
 
 If the preview looks right, apply it:
@@ -100,6 +101,12 @@ npx oss-maintainer-kit init ../my-repo \
 ```
 
 By default, existing files are left untouched. Add `--force` only if you want to overwrite matching files.
+
+If you are applying the kit to an existing repo and want to preview overwrites before doing anything, use:
+
+```bash
+npx oss-maintainer-kit init . --preset base --force --dry-run --diff
+```
 
 Then open `docs/START_HERE.md` in the generated repo. That is the fastest path to understanding what just happened.
 
@@ -226,7 +233,7 @@ Smoke check the CLI:
 
 ```bash
 node ./bin/maintainer-kit.js explain
-node ./bin/maintainer-kit.js init ../example-repo --preset first-public-repo --dry-run
+node ./bin/maintainer-kit.js init ../example-repo --preset first-public-repo --dry-run --diff
 node ./bin/maintainer-kit.js check-docs .
 ```
 

@@ -17,6 +17,7 @@ test("parseCliArgs handles init flags", () => {
     "Jane Doe",
     "--preset",
     "first-public-repo",
+    "--diff",
     "--force",
   ]);
 
@@ -25,6 +26,7 @@ test("parseCliArgs handles init flags", () => {
   assert.equal(parsed.repoName, "demo-repo");
   assert.equal(parsed.maintainerName, "Jane Doe");
   assert.equal(parsed.preset, "first-public-repo");
+  assert.equal(parsed.diff, true);
   assert.equal(parsed.force, true);
 });
 
@@ -136,6 +138,25 @@ test("initKit dry-run previews files without writing them", async () => {
   } catch (error) {
     assert.equal(error.code, "ENOENT");
   }
+});
+
+test("initKit dry-run diff previews new files", async () => {
+  const targetDir = await mkdtemp(path.join(os.tmpdir(), "oss-maintainer-kit-"));
+  const previewTarget = path.join(targetDir, "preview-repo");
+
+  const result = await initKit({
+    dryRun: true,
+    maintainerName: "Jane Doe",
+    repoName: "demo-repo",
+    showDiff: true,
+    targetDir: previewTarget,
+  });
+
+  const agentsDiff = result.diffs.find((entry) => entry.path === "AGENTS.md");
+
+  assert.ok(agentsDiff);
+  assert.match(agentsDiff.diff, /diff --git a\/AGENTS\.md b\/AGENTS\.md/);
+  assert.match(agentsDiff.diff, /\+\# AGENTS\.md/);
 });
 
 test("first-public-repo preset leaves out the release workflow", async () => {
@@ -278,6 +299,30 @@ test("security-sensitive-repo preset excludes automation workflows and injects s
   assert.match(agents, /trust boundaries/);
   assert.match(prTemplate, /auth, secret, or crypto behavior/);
   assert.match(workflow, /check-docs/);
+});
+
+test("initKit dry-run diff previews overwrites when force is set", async () => {
+  const targetDir = await mkdtemp(path.join(os.tmpdir(), "oss-maintainer-kit-"));
+  const agentsPath = path.join(targetDir, "AGENTS.md");
+  await mkdir(path.dirname(agentsPath), { recursive: true });
+  await writeFile(agentsPath, "custom content\n", "utf8");
+
+  const result = await initKit({
+    dryRun: true,
+    force: true,
+    maintainerName: "Jane Doe",
+    repoName: "demo-repo",
+    showDiff: true,
+    targetDir,
+  });
+
+  const agentsOperation = result.operations.find((entry) => entry.path === "AGENTS.md");
+  const agentsDiff = result.diffs.find((entry) => entry.path === "AGENTS.md");
+
+  assert.equal(agentsOperation?.type, "update");
+  assert.ok(agentsDiff);
+  assert.match(agentsDiff.diff, /-custom content/);
+  assert.match(agentsDiff.diff, /\+\# AGENTS\.md/);
 });
 
 test("checkDocs reports missing files and anchors", async () => {
