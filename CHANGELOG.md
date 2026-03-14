@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.0 - 2026-03-14
+
+- add `nextjs-app` and `python-service` presets for deployable application and service repos
+- publish matching public example repositories for both presets
+- update the README and roadmap so the new presets are visible in the main product surface
+
 ## 0.6.0 - 2026-03-14
 
 - add a `repo-health` workflow template that runs low-risk checks like `check-docs` in pull requests

@@ -42,6 +42,24 @@ export const presets = {
       path.resolve(templatesRoot, "presets", "python-package"),
     ],
   },
+  "nextjs-app": {
+    description:
+      "Starter for Next.js apps where routing, rendering mode, env vars, and deployment behavior need explicit review guidance.",
+    excludedPaths: [],
+    templateRoots: [
+      templateRoot,
+      path.resolve(templatesRoot, "presets", "nextjs-app"),
+    ],
+  },
+  "python-service": {
+    description:
+      "Starter for Python services or APIs where config, deploy behavior, migrations, and observability matter more than packaging.",
+    excludedPaths: [],
+    templateRoots: [
+      templateRoot,
+      path.resolve(templatesRoot, "presets", "python-service"),
+    ],
+  },
   "docs-heavy": {
     description:
       "Starter for repositories where written guidance, examples, and contributor clarity matter more than app code.",

@@ -63,6 +63,8 @@ test("usage and explainKit describe the beginner path", () => {
   assert.match(usage(), /first-public-repo/);
   assert.match(usage(), /javascript-library/);
   assert.match(usage(), /python-package/);
+  assert.match(usage(), /nextjs-app/);
+  assert.match(usage(), /python-service/);
   assert.match(usage(), /docs-heavy/);
   assert.match(usage(), /security-sensitive-repo/);
   assert.match(usage(), /sync-labels/);
@@ -196,6 +198,48 @@ test("docs-heavy preset injects docs-first guidance", async () => {
   const agents = await readFile(path.join(targetDir, "AGENTS.md"), "utf8");
   assert.match(agents, /docs-heavy repository/);
   assert.match(agents, /Broken links, misleading examples/);
+});
+
+test("nextjs-app preset injects app and deploy guidance", async () => {
+  const targetDir = await mkdtemp(path.join(os.tmpdir(), "oss-maintainer-kit-"));
+
+  await initKit({
+    maintainerName: "Jane Doe",
+    preset: "nextjs-app",
+    repoName: "demo-repo",
+    targetDir,
+  });
+
+  const agents = await readFile(path.join(targetDir, "AGENTS.md"), "utf8");
+  const startHere = await readFile(
+    path.join(targetDir, "docs", "START_HERE.md"),
+    "utf8",
+  );
+
+  assert.match(agents, /Next\.js app/);
+  assert.match(agents, /NEXT_PUBLIC_/);
+  assert.match(startHere, /production build/);
+});
+
+test("python-service preset injects service and deploy guidance", async () => {
+  const targetDir = await mkdtemp(path.join(os.tmpdir(), "oss-maintainer-kit-"));
+
+  await initKit({
+    maintainerName: "Jane Doe",
+    preset: "python-service",
+    repoName: "demo-repo",
+    targetDir,
+  });
+
+  const agents = await readFile(path.join(targetDir, "AGENTS.md"), "utf8");
+  const workflow = await readFile(
+    path.join(targetDir, "docs", "MAINTAINER_WORKFLOW.md"),
+    "utf8",
+  );
+
+  assert.match(agents, /Python service or API/);
+  assert.match(agents, /rollback safety/);
+  assert.match(workflow, /smoke test plan/);
 });
 
 test("security-sensitive-repo preset excludes automation workflows and injects security guidance", async () => {

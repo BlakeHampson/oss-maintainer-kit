@@ -9,6 +9,8 @@
 [![JS example](https://img.shields.io/badge/example-javascript--library-f59e0b)](https://github.com/BlakeHampson/oss-maintainer-kit-javascript-example)
 [![Python example](https://img.shields.io/badge/example-python--package-2563eb)](https://github.com/BlakeHampson/oss-maintainer-kit-python-example)
 [![Docs example](https://img.shields.io/badge/example-docs--heavy-16a34a)](https://github.com/BlakeHampson/oss-maintainer-kit-docs-example)
+[![Next.js example](https://img.shields.io/badge/example-nextjs--app-111827)](https://github.com/BlakeHampson/oss-maintainer-kit-nextjs-example)
+[![Python service example](https://img.shields.io/badge/example-python--service-0f766e)](https://github.com/BlakeHampson/oss-maintainer-kit-python-service-example)
 [![Security example](https://img.shields.io/badge/example-security--sensitive--repo-dc2626)](https://github.com/BlakeHampson/oss-maintainer-kit-security-sensitive-example)
 [![Security web example](https://img.shields.io/badge/example-security--web--service-b91c1c)](https://github.com/BlakeHampson/oss-maintainer-kit-security-web-service-example)
 
@@ -108,6 +110,8 @@ If you want a concrete generated repo to inspect, start with one of these:
 - [oss-maintainer-kit-example](https://github.com/BlakeHampson/oss-maintainer-kit-example) for `first-public-repo`
 - [oss-maintainer-kit-javascript-example](https://github.com/BlakeHampson/oss-maintainer-kit-javascript-example) for `javascript-library`
 - [oss-maintainer-kit-python-example](https://github.com/BlakeHampson/oss-maintainer-kit-python-example) for `python-package`
+- [oss-maintainer-kit-nextjs-example](https://github.com/BlakeHampson/oss-maintainer-kit-nextjs-example) for `nextjs-app`
+- [oss-maintainer-kit-python-service-example](https://github.com/BlakeHampson/oss-maintainer-kit-python-service-example) for `python-service`
 - [oss-maintainer-kit-docs-example](https://github.com/BlakeHampson/oss-maintainer-kit-docs-example) for `docs-heavy`
 - [oss-maintainer-kit-security-sensitive-example](https://github.com/BlakeHampson/oss-maintainer-kit-security-sensitive-example) for `security-sensitive-repo`
 - [oss-maintainer-kit-security-web-service-example](https://github.com/BlakeHampson/oss-maintainer-kit-security-web-service-example) for a deployable web-service take on `security-sensitive-repo`
@@ -124,7 +128,7 @@ If you want a concrete generated repo to inspect, start with one of these:
 
 This kit is already being used in two different ways:
 
-- Public examples: there are now 6 live example repos covering beginner, package, docs, and security-sensitive repository shapes, so you can inspect the generated files instead of guessing what a preset does.
+- Public examples: there are now 8 live example repos covering beginner, package, app, service, docs, and security-sensitive repository shapes, so you can inspect the generated files instead of guessing what a preset does.
 - Private security-sensitive repo: `ShuleDocs`, a secure Microsoft Office add-in project, is using the kit for maintainer onboarding, repo-specific `AGENTS.md` guidance, and GitHub issue and pull request templates without enabling the optional Codex Actions by default.
 
 That split is intentional. The same kit should be useful for a beginner opening a repo to contributors and for a more security-sensitive project that wants better review discipline without immediately adding more automation.
@@ -151,6 +155,8 @@ If you already use built-in Codex GitHub reviews, you may not want the pull requ
 | `base` | general-purpose repos | includes both optional Codex workflows | scaffold from the main examples if you want the full starter |
 | `javascript-library` | JavaScript and TypeScript packages | adds package-focused review guidance and docs | [oss-maintainer-kit-javascript-example](https://github.com/BlakeHampson/oss-maintainer-kit-javascript-example) |
 | `python-package` | Python packages and tools | adds packaging and environment-focused guidance | [oss-maintainer-kit-python-example](https://github.com/BlakeHampson/oss-maintainer-kit-python-example) |
+| `nextjs-app` | Next.js web apps | adds routing, rendering, env var, and deploy-focused guidance | [oss-maintainer-kit-nextjs-example](https://github.com/BlakeHampson/oss-maintainer-kit-nextjs-example) |
+| `python-service` | Python APIs, workers, and services | adds runtime, config, migration, and deploy-focused guidance | [oss-maintainer-kit-python-service-example](https://github.com/BlakeHampson/oss-maintainer-kit-python-service-example) |
 | `docs-heavy` | docs, guides, and content-heavy repos | adds accuracy, examples, and structure-focused guidance | [oss-maintainer-kit-docs-example](https://github.com/BlakeHampson/oss-maintainer-kit-docs-example) |
 | `security-sensitive-repo` | repos where auth, secrets, packaging, or trust boundaries need stricter review discipline | adds security-oriented review guidance, risk-aware PR and issue templates, and disables optional Codex Actions by default | [packaging-heavy example](https://github.com/BlakeHampson/oss-maintainer-kit-security-sensitive-example)<br>[web-service example](https://github.com/BlakeHampson/oss-maintainer-kit-security-web-service-example) |
 
