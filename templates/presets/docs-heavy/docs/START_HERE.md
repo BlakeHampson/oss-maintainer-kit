@@ -11,6 +11,7 @@ It assumes your biggest maintenance risk is confusion: outdated instructions, br
 3. Keep the issue and pull request templates unless they are clearly wrong for your workflow.
 4. Decide how you want to verify links, examples, screenshots, and generated docs.
 5. Add `OPENAI_API_KEY` only if you want the optional Codex GitHub Actions.
+6. Run `oss-maintainer-kit check-docs .` after doc edits to catch broken local links and anchors.
 
 ## What to pay extra attention to
 

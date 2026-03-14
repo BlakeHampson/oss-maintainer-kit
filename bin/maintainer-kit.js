@@ -4,6 +4,7 @@ import path from "node:path";
 import process from "node:process";
 
 import { explainKit, initKit, parseCliArgs, usage } from "../src/scaffold.js";
+import { checkDocs } from "../src/docs.js";
 import { syncLabels } from "../src/labels.js";
 
 async function main() {
@@ -54,6 +55,30 @@ async function main() {
       console.log("Labels synced.");
     }
 
+    return;
+  }
+
+  if (args.command === "check-docs") {
+    const rootDir = path.resolve(process.cwd(), args.targetDir ?? ".");
+    const result = await checkDocs({ rootDir });
+
+    console.log(`Checked markdown files: ${result.filesChecked}`);
+    console.log(`Root: ${rootDir}`);
+
+    if (result.issues.length === 0) {
+      console.log("");
+      console.log("No broken local Markdown links or anchors found.");
+      return;
+    }
+
+    console.log("");
+    console.log(`Issues found: ${result.issues.length}`);
+    for (const issue of result.issues) {
+      const relativePath = path.relative(rootDir, issue.filePath) || path.basename(issue.filePath);
+      console.log(`- ${relativePath}:${issue.line} [${issue.code}] ${issue.message}`);
+    }
+
+    process.exitCode = 1;
     return;
   }
 

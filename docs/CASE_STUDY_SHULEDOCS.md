@@ -26,6 +26,12 @@ Before the kit was applied, the repo already had substantial product and impleme
 - a pull request template oriented around validation, risk, and docs sync
 - issue templates that separate docs drift from runtime, packaging, and security-sensitive behavior
 
+Immediate, measurable outcome:
+
+- 8 maintainer-facing files added in one change
+- 315 lines of maintainer guidance and issue or pull request intake structure added
+- 0 optional Codex workflows enabled by default
+
 ## What was deliberately not added
 
 The optional Codex GitHub Actions were not enabled by default.

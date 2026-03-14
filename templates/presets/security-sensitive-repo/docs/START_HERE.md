@@ -24,6 +24,8 @@ Decide which class of change this is:
 
 If the answer is anything except docs-only, treat it as a higher-risk change and update docs in the same pull request.
 
+After doc edits, run `oss-maintainer-kit check-docs .` to catch broken local Markdown links and anchors before you merge.
+
 ## Safe defaults
 
 - Prefer precise claims over broad security language.

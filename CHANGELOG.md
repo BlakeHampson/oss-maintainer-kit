@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.0 - 2026-03-14
+
+- add a `check-docs` command to catch broken local Markdown links and anchors
+- add a second public security-sensitive example repo for a deployable web-service shape
+- add a public `ShuleDocs` case study with concrete adoption outcomes
+- extract docs and security guidance so the new checks are part of the preset workflow
+
 ## 0.4.0 - 2026-03-14
 
 - add the `security-sensitive-repo` preset with stricter review guidance and no optional Codex Actions by default

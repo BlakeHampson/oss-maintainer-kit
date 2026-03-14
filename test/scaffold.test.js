@@ -1,9 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
+import { checkDocs, collectAnchors } from "../src/docs.js";
 import { explainKit, initKit, parseCliArgs, replaceTokens, usage } from "../src/scaffold.js";
 
 test("parseCliArgs handles init flags", () => {
@@ -33,6 +34,13 @@ test("parseCliArgs handles explain", () => {
   assert.equal(parsed.command, "explain");
 });
 
+test("parseCliArgs handles check-docs", () => {
+  const parsed = parseCliArgs(["check-docs", "../repo"]);
+
+  assert.equal(parsed.command, "check-docs");
+  assert.equal(parsed.targetDir, "../repo");
+});
+
 test("replaceTokens replaces all supported placeholders", () => {
   const rendered = replaceTokens("__PROJECT_NAME__ by __MAINTAINER_NAME__", {
     "__MAINTAINER_NAME__": "Jane Doe",
@@ -40,6 +48,14 @@ test("replaceTokens replaces all supported placeholders", () => {
   });
 
   assert.equal(rendered, "demo-repo by Jane Doe");
+});
+
+test("collectAnchors handles duplicate headings", () => {
+  const anchors = collectAnchors(`# Intro\n## Setup\n## Setup\n`);
+
+  assert.ok(anchors.has("intro"));
+  assert.ok(anchors.has("setup"));
+  assert.ok(anchors.has("setup-1"));
 });
 
 test("usage and explainKit describe the beginner path", () => {
@@ -212,4 +228,48 @@ test("security-sensitive-repo preset excludes automation workflows and injects s
   assert.match(agents, /security-sensitive/);
   assert.match(agents, /trust boundaries/);
   assert.match(prTemplate, /auth, secret, or crypto behavior/);
+});
+
+test("checkDocs reports missing files and anchors", async () => {
+  const targetDir = await mkdtemp(path.join(os.tmpdir(), "oss-maintainer-kit-docs-"));
+  const docsDir = path.join(targetDir, "docs");
+
+  await mkdir(docsDir, { recursive: true });
+
+  await writeFile(
+    path.join(targetDir, "README.md"),
+    [
+      "# Demo",
+      "",
+      "[Working](docs/good.md#intro)",
+      "[Missing file](docs/nope.md)",
+      "[Missing anchor](docs/good.md#not-there)",
+      "[Local missing anchor](#also-missing)",
+      "",
+    ].join("\n"),
+    "utf8",
+  );
+
+  await writeFile(
+    path.join(docsDir, "good.md"),
+    "# Intro\n\n## More Detail\n",
+    "utf8",
+  );
+
+  const result = await checkDocs({ rootDir: targetDir });
+
+  assert.equal(result.filesChecked, 2);
+  assert.equal(result.issues.length, 3);
+  assert.match(
+    result.issues.map((issue) => issue.message).join("\n"),
+    /Linked path "docs\/nope\.md" does not exist/,
+  );
+  assert.match(
+    result.issues.map((issue) => issue.message).join("\n"),
+    /Anchor "#not-there" does not exist/,
+  );
+  assert.match(
+    result.issues.map((issue) => issue.message).join("\n"),
+    /Anchor "#also-missing" does not exist in this file/,
+  );
 });

@@ -97,6 +97,7 @@ Usage:
   ${commandName} explain
   ${commandName} init [target-directory] [--repo-name name] [--maintainer "Name"] [--preset name] [--force] [--dry-run]
   ${commandName} sync-labels OWNER/REPO [--manifest name] [--dry-run]
+  ${commandName} check-docs [target-directory]
 
 Presets:
 ${formatPresetList()}
@@ -108,6 +109,7 @@ Examples:
   ${commandName} init ../my-repo --repo-name my-repo --maintainer "Jane Doe"
   ${commandName} init ../my-repo --dry-run
   ${commandName} sync-labels BlakeHampson/oss-maintainer-kit --dry-run
+  ${commandName} check-docs .
 `;
 }
 
@@ -123,6 +125,7 @@ What it adds:
 - codex-pr-review.yml: an optional GitHub Action that asks Codex to review pull requests
 - codex-release-prep.yml: an optional GitHub Action that drafts release notes and a checklist
 - a label sync command for standard GitHub triage labels
+- a docs check command for catching broken local Markdown links and anchors
 
 Presets:
 ${formatPresetList()}
@@ -137,6 +140,7 @@ If you are new to GitHub or open source, start with:
 2. ${commandName} init ../my-repo --repo-name my-repo --maintainer "Your Name" --preset first-public-repo
 3. open docs/START_HERE.md in the generated repo
 4. optionally run ${commandName} sync-labels OWNER/REPO --dry-run to standardize labels
+5. run ${commandName} check-docs . after doc edits to catch broken local links and anchors
 
 You can safely ignore the release workflow until you actually start shipping versions.
 `;

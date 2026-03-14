@@ -10,6 +10,7 @@
 [![Python example](https://img.shields.io/badge/example-python--package-2563eb)](https://github.com/BlakeHampson/oss-maintainer-kit-python-example)
 [![Docs example](https://img.shields.io/badge/example-docs--heavy-16a34a)](https://github.com/BlakeHampson/oss-maintainer-kit-docs-example)
 [![Security example](https://img.shields.io/badge/example-security--sensitive--repo-dc2626)](https://github.com/BlakeHampson/oss-maintainer-kit-security-sensitive-example)
+[![Security web example](https://img.shields.io/badge/example-security--web--service-b91c1c)](https://github.com/BlakeHampson/oss-maintainer-kit-security-web-service-example)
 
 Turn a code repository into a public project that other people can understand, review, and contribute to.
 
@@ -106,6 +107,7 @@ If you want a concrete generated repo to inspect, start with one of these:
 - [oss-maintainer-kit-python-example](https://github.com/BlakeHampson/oss-maintainer-kit-python-example) for `python-package`
 - [oss-maintainer-kit-docs-example](https://github.com/BlakeHampson/oss-maintainer-kit-docs-example) for `docs-heavy`
 - [oss-maintainer-kit-security-sensitive-example](https://github.com/BlakeHampson/oss-maintainer-kit-security-sensitive-example) for `security-sensitive-repo`
+- [oss-maintainer-kit-security-web-service-example](https://github.com/BlakeHampson/oss-maintainer-kit-security-web-service-example) for a deployable web-service take on `security-sensitive-repo`
 
 ## Suggested first hour after setup
 
@@ -119,7 +121,7 @@ If you want a concrete generated repo to inspect, start with one of these:
 
 This kit is already being used in two different ways:
 
-- Public examples: there are live example repos for `first-public-repo`, `javascript-library`, `python-package`, and `docs-heavy`, so you can inspect the generated files instead of guessing what a preset does.
+- Public examples: there are now 6 live example repos covering beginner, package, docs, and security-sensitive repository shapes, so you can inspect the generated files instead of guessing what a preset does.
 - Private security-sensitive repo: `ShuleDocs`, a secure Microsoft Office add-in project, is using the kit for maintainer onboarding, repo-specific `AGENTS.md` guidance, and GitHub issue and pull request templates without enabling the optional Codex Actions by default.
 
 That split is intentional. The same kit should be useful for a beginner opening a repo to contributors and for a more security-sensitive project that wants better review discipline without immediately adding more automation.
@@ -146,7 +148,7 @@ If you already use built-in Codex GitHub reviews, you may not want the pull requ
 | `javascript-library` | JavaScript and TypeScript packages | adds package-focused review guidance and docs | [oss-maintainer-kit-javascript-example](https://github.com/BlakeHampson/oss-maintainer-kit-javascript-example) |
 | `python-package` | Python packages and tools | adds packaging and environment-focused guidance | [oss-maintainer-kit-python-example](https://github.com/BlakeHampson/oss-maintainer-kit-python-example) |
 | `docs-heavy` | docs, guides, and content-heavy repos | adds accuracy, examples, and structure-focused guidance | [oss-maintainer-kit-docs-example](https://github.com/BlakeHampson/oss-maintainer-kit-docs-example) |
-| `security-sensitive-repo` | repos where auth, secrets, packaging, or trust boundaries need stricter review discipline | adds security-oriented review guidance, risk-aware PR and issue templates, and disables optional Codex Actions by default | [oss-maintainer-kit-security-sensitive-example](https://github.com/BlakeHampson/oss-maintainer-kit-security-sensitive-example) |
+| `security-sensitive-repo` | repos where auth, secrets, packaging, or trust boundaries need stricter review discipline | adds security-oriented review guidance, risk-aware PR and issue templates, and disables optional Codex Actions by default | [packaging-heavy example](https://github.com/BlakeHampson/oss-maintainer-kit-security-sensitive-example)<br>[web-service example](https://github.com/BlakeHampson/oss-maintainer-kit-security-web-service-example) |
 
 The `first-public-repo` preset intentionally leaves out release-prep automation. Most new repos do not need it yet.
 
@@ -182,6 +184,16 @@ The sync is intentionally non-destructive. It creates missing labels and updates
 
 More detail: [docs/LABELS.md](docs/LABELS.md)
 
+## Docs checks
+
+If your repo is docs-heavy or security-sensitive, run this after editing Markdown:
+
+```bash
+npx oss-maintainer-kit check-docs .
+```
+
+It checks local Markdown links and heading anchors so broken navigation gets caught before a PR is merged.
+
 ## What this kit does not do
 
 - It does not write application code.
@@ -202,6 +214,7 @@ Smoke check the CLI:
 ```bash
 node ./bin/maintainer-kit.js explain
 node ./bin/maintainer-kit.js init ../example-repo --preset first-public-repo --dry-run
+node ./bin/maintainer-kit.js check-docs .
 ```
 
 ## Roadmap
