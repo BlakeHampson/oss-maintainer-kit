@@ -89,6 +89,7 @@ npx oss-maintainer-kit init ../my-repo \
   --repo-name my-repo \
   --maintainer "Your Name" \
   --preset first-public-repo \
+  --bundle core \
   --dry-run \
   --diff
 ```
@@ -99,7 +100,8 @@ If the preview looks right, apply it:
 npx oss-maintainer-kit init ../my-repo \
   --repo-name my-repo \
   --maintainer "Your Name" \
-  --preset first-public-repo
+  --preset first-public-repo \
+  --bundle core
 ```
 
 By default, existing files are left untouched. Add `--force` only if you want to overwrite matching files.
@@ -113,6 +115,8 @@ npx oss-maintainer-kit init . --preset base --force --dry-run --diff
 Then open `docs/START_HERE.md` in the generated repo. That is the fastest path to understanding what just happened.
 
 If you want the full starter, omit `--preset` or set `--preset base`.
+
+If you want a middle ground for app repos, use `--bundle checks` to keep low-risk checks like `repo-health.yml` and `ci-smoke.yml` while skipping Codex automation and release-prep files.
 
 If you want a concrete generated repo to inspect, start with one of these:
 
@@ -163,6 +167,27 @@ If you already use built-in Codex GitHub reviews, you may not want the pull requ
 
 If you want structured release output, see [docs/RELEASE_NOTE_SCHEMA.md](docs/RELEASE_NOTE_SCHEMA.md). If you do not, delete `.github/release-note-schema.yml` and keep the simpler Markdown-only path.
 
+## Bundle selection
+
+`--bundle` lets you control how many optional advanced files get scaffolded without changing the preset itself.
+
+Available bundle profiles:
+
+- `preset-default`: keep the preset's current default behavior
+- `core`: onboarding files only, with no optional advanced workflows or release schemas
+- `checks`: keep low-risk checks like `repo-health.yml` and `ci-smoke.yml` when the preset supports them, but skip Codex automation and release schemas
+- `full`: include every optional advanced file the preset can supply, even if the preset is normally lighter by default
+
+Examples:
+
+```bash
+npx oss-maintainer-kit init ../my-repo --preset first-public-repo --bundle core --dry-run --diff
+npx oss-maintainer-kit init ../my-repo --preset nextjs-app --bundle checks --dry-run --diff
+npx oss-maintainer-kit init ../my-repo --preset security-sensitive-repo --bundle full --dry-run --diff
+```
+
+`--dry-run --diff` works the same way with bundle selection. It previews exactly which optional files would appear or disappear before you write anything.
+
 ## Presets
 
 | Preset | Best for | What changes | Example repo |
@@ -176,7 +201,7 @@ If you want structured release output, see [docs/RELEASE_NOTE_SCHEMA.md](docs/RE
 | `docs-heavy` | docs, guides, and content-heavy repos | adds accuracy, examples, and structure-focused guidance | [oss-maintainer-kit-docs-example](https://github.com/BlakeHampson/oss-maintainer-kit-docs-example) |
 | `security-sensitive-repo` | repos where auth, secrets, packaging, or trust boundaries need stricter review discipline | adds security-oriented review guidance, risk-aware PR and issue templates, and disables optional Codex Actions by default | [packaging-heavy example](https://github.com/BlakeHampson/oss-maintainer-kit-security-sensitive-example)<br>[web-service example](https://github.com/BlakeHampson/oss-maintainer-kit-security-web-service-example) |
 
-The `first-public-repo` preset intentionally leaves out release-prep automation. Most new repos do not need it yet.
+The `first-public-repo` preset intentionally leaves out release-prep automation by default. If you later want every optional file it can supply, use `--bundle full`.
 
 ## Standard label sync
 
@@ -241,7 +266,7 @@ Smoke check the CLI:
 
 ```bash
 node ./bin/maintainer-kit.js explain
-node ./bin/maintainer-kit.js init ../example-repo --preset first-public-repo --dry-run --diff
+node ./bin/maintainer-kit.js init ../example-repo --preset first-public-repo --bundle core --dry-run --diff
 node ./bin/maintainer-kit.js check-docs .
 ```
 

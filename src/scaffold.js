@@ -8,17 +8,24 @@ const __dirname = path.dirname(__filename);
 const templatesRoot = path.resolve(__dirname, "..", "templates");
 export const templateRoot = path.resolve(templatesRoot, "base");
 const commandName = "oss-maintainer-kit";
+const optionalAdvancedPaths = [
+  ".github/release-note-schema.yml",
+  ".github/workflows/repo-health.yml",
+  ".github/workflows/codex-pr-review.yml",
+  ".github/workflows/codex-release-prep.yml",
+  ".github/workflows/ci-smoke.yml",
+];
 
 export const presets = {
   base: {
     description: "Full starter with issue templates, PR template, and both optional Codex workflows.",
-    excludedPaths: [],
+    defaultExcludedPaths: [],
     templateRoots: [templateRoot],
   },
   "first-public-repo": {
     description:
       "Lighter starter for a newly public or solo-built repo. Keeps the review workflow, leaves out release prep.",
-    excludedPaths: [
+    defaultExcludedPaths: [
       ".github/release-note-schema.yml",
       ".github/workflows/codex-release-prep.yml",
     ],
@@ -30,7 +37,7 @@ export const presets = {
   "javascript-library": {
     description:
       "Starter for JavaScript or TypeScript packages where API stability, docs, and publish safety matter.",
-    excludedPaths: [],
+    defaultExcludedPaths: [],
     templateRoots: [
       templateRoot,
       path.resolve(templatesRoot, "presets", "javascript-library"),
@@ -39,7 +46,7 @@ export const presets = {
   "python-package": {
     description:
       "Starter for Python packages with guidance around packaging, tests, examples, and release safety.",
-    excludedPaths: [],
+    defaultExcludedPaths: [],
     templateRoots: [
       templateRoot,
       path.resolve(templatesRoot, "presets", "python-package"),
@@ -48,7 +55,7 @@ export const presets = {
   "nextjs-app": {
     description:
       "Starter for Next.js apps where routing, rendering mode, env vars, and deployment behavior need explicit review guidance.",
-    excludedPaths: [],
+    defaultExcludedPaths: [],
     templateRoots: [
       templateRoot,
       path.resolve(templatesRoot, "presets", "nextjs-app"),
@@ -57,7 +64,7 @@ export const presets = {
   "python-service": {
     description:
       "Starter for Python services or APIs where config, deploy behavior, migrations, and observability matter more than packaging.",
-    excludedPaths: [],
+    defaultExcludedPaths: [],
     templateRoots: [
       templateRoot,
       path.resolve(templatesRoot, "presets", "python-service"),
@@ -66,7 +73,7 @@ export const presets = {
   "docs-heavy": {
     description:
       "Starter for repositories where written guidance, examples, and contributor clarity matter more than app code.",
-    excludedPaths: [],
+    defaultExcludedPaths: [],
     templateRoots: [
       templateRoot,
       path.resolve(templatesRoot, "presets", "docs-heavy"),
@@ -75,7 +82,7 @@ export const presets = {
   "security-sensitive-repo": {
     description:
       "Starter for repositories where trust boundaries, secrets, packaging, or incident risk require stricter review guidance.",
-    excludedPaths: [
+    defaultExcludedPaths: [
       ".github/release-note-schema.yml",
       ".github/workflows/codex-pr-review.yml",
       ".github/workflows/codex-release-prep.yml",
@@ -87,8 +94,36 @@ export const presets = {
   },
 };
 
+export const bundles = {
+  "preset-default": {
+    description: "Keeps the current preset defaults. This is the existing behavior.",
+    includeOptionalPaths: null,
+  },
+  core: {
+    description: "Keeps onboarding files and templates, but leaves out optional advanced workflows and schemas.",
+    includeOptionalPaths: [],
+  },
+  checks: {
+    description: "Keeps low-risk checks like repo-health and preset-specific ci-smoke workflows, but skips Codex automation and release schemas.",
+    includeOptionalPaths: [
+      ".github/workflows/repo-health.yml",
+      ".github/workflows/ci-smoke.yml",
+    ],
+  },
+  full: {
+    description: "Includes every optional advanced file the preset can supply, even if the preset is normally lighter by default.",
+    includeOptionalPaths: optionalAdvancedPaths,
+  },
+};
+
 function formatPresetList() {
   return Object.entries(presets)
+    .map(([name, config]) => `  - ${name}: ${config.description}`)
+    .join("\n");
+}
+
+function formatBundleList() {
+  return Object.entries(bundles)
     .map(([name, config]) => `  - ${name}: ${config.description}`)
     .join("\n");
 }
@@ -105,6 +140,18 @@ function getPresetConfig(presetName) {
   return preset;
 }
 
+function getBundleConfig(bundleName) {
+  const bundle = bundles[bundleName];
+
+  if (!bundle) {
+    throw new Error(
+      `Unknown bundle: ${bundleName}\n\nAvailable bundles:\n${formatBundleList()}`,
+    );
+  }
+
+  return bundle;
+}
+
 function normalizeRelativePath(relativePath) {
   return relativePath.split(path.sep).join("/");
 }
@@ -117,17 +164,21 @@ explain, and contribute to.
 
 Usage:
   ${commandName} explain
-  ${commandName} init [target-directory] [--repo-name name] [--maintainer "Name"] [--preset name] [--force] [--dry-run] [--diff]
+  ${commandName} init [target-directory] [--repo-name name] [--maintainer "Name"] [--preset name] [--bundle name] [--force] [--dry-run] [--diff]
   ${commandName} sync-labels OWNER/REPO [--manifest name] [--dry-run]
   ${commandName} check-docs [target-directory]
 
 Presets:
 ${formatPresetList()}
 
+Bundles:
+${formatBundleList()}
+
 Examples:
   ${commandName} explain
   ${commandName} init .
-  ${commandName} init ../my-repo --preset first-public-repo --dry-run --diff
+  ${commandName} init ../my-repo --preset first-public-repo --bundle core --dry-run --diff
+  ${commandName} init ../my-repo --preset nextjs-app --bundle checks --dry-run --diff
   ${commandName} init ../my-repo --repo-name my-repo --maintainer "Jane Doe"
   ${commandName} init ../my-repo --dry-run
   ${commandName} sync-labels BlakeHampson/oss-maintainer-kit --dry-run
@@ -152,14 +203,17 @@ What it adds:
 Presets:
 ${formatPresetList()}
 
+Bundles:
+${formatBundleList()}
+
 What it does not do:
 - it does not change your application code
 - it does not force you to use every workflow
 - it does not replace tests or human judgment
 
 If you are new to GitHub or open source, start with:
-1. ${commandName} init ../my-repo --preset first-public-repo --dry-run --diff
-2. ${commandName} init ../my-repo --repo-name my-repo --maintainer "Your Name" --preset first-public-repo
+1. ${commandName} init ../my-repo --preset first-public-repo --bundle core --dry-run --diff
+2. ${commandName} init ../my-repo --repo-name my-repo --maintainer "Your Name" --preset first-public-repo --bundle core
 3. open docs/START_HERE.md in the generated repo
 4. optionally run ${commandName} sync-labels OWNER/REPO --dry-run to standardize labels
 5. run ${commandName} check-docs . after doc edits to catch broken local links and anchors
@@ -177,6 +231,7 @@ export function parseCliArgs(argv) {
     help: false,
     manifestName: "standard",
     maintainerName: undefined,
+    bundle: "preset-default",
     preset: "base",
     repoName: undefined,
     targetRepo: undefined,
@@ -238,6 +293,15 @@ export function parseCliArgs(argv) {
         throw new Error("--preset requires a value");
       }
       result.preset = argv[index + 1];
+      index += 1;
+      continue;
+    }
+
+    if (value === "--bundle") {
+      if (!argv[index + 1]) {
+        throw new Error("--bundle requires a value");
+      }
+      result.bundle = argv[index + 1];
       index += 1;
       continue;
     }
@@ -449,7 +513,6 @@ function buildUnifiedDiff({ newContent, oldContent, relativePath }) {
 async function collectTemplateDirectory({
   currentSource,
   files,
-  excludedPaths,
   relativeRoot = "",
   tokens,
 }) {
@@ -461,15 +524,10 @@ async function collectTemplateDirectory({
       path.join(relativeRoot, entry.name),
     );
 
-    if (excludedPaths.has(relativeTargetPath)) {
-      continue;
-    }
-
     if (entry.isDirectory()) {
       await collectTemplateDirectory({
         currentSource: sourcePath,
         files,
-        excludedPaths,
         relativeRoot: relativeTargetPath,
         tokens,
       });
@@ -482,17 +540,48 @@ async function collectTemplateDirectory({
   }
 }
 
-async function collectRenderedTemplates({ presetConfig, tokens }) {
+function resolveExcludedPaths({ bundleName, presetConfig, renderedFiles }) {
+  const bundleConfig = getBundleConfig(bundleName);
+
+  if (bundleConfig.includeOptionalPaths === null) {
+    return new Set(presetConfig.defaultExcludedPaths);
+  }
+
+  const includedOptionalPaths = new Set(bundleConfig.includeOptionalPaths);
+  const excludedPaths = new Set();
+
+  for (const optionalPath of optionalAdvancedPaths) {
+    if (!renderedFiles.has(optionalPath)) {
+      continue;
+    }
+
+    if (!includedOptionalPaths.has(optionalPath)) {
+      excludedPaths.add(optionalPath);
+    }
+  }
+
+  return excludedPaths;
+}
+
+async function collectRenderedTemplates({ bundleName, presetConfig, tokens }) {
   const files = new Map();
-  const excludedPaths = new Set(presetConfig.excludedPaths);
 
   for (const currentTemplateRoot of presetConfig.templateRoots) {
     await collectTemplateDirectory({
       currentSource: currentTemplateRoot,
       files,
-      excludedPaths,
       tokens,
     });
+  }
+
+  const excludedPaths = resolveExcludedPaths({
+    bundleName,
+    presetConfig,
+    renderedFiles: files,
+  });
+
+  for (const excludedPath of excludedPaths) {
+    files.delete(excludedPath);
   }
 
   return files;
@@ -507,6 +596,7 @@ async function readExistingContent(targetPath) {
 }
 
 export async function initKit({
+  bundle = "preset-default",
   dryRun = false,
   force = false,
   maintainerName,
@@ -531,7 +621,7 @@ export async function initKit({
     await mkdir(targetDir, { recursive: true });
   }
 
-  const renderedFiles = await collectRenderedTemplates({ presetConfig, tokens });
+  const renderedFiles = await collectRenderedTemplates({ bundleName: bundle, presetConfig, tokens });
   const operations = [];
   const diffs = [];
 

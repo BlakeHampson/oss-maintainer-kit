@@ -22,15 +22,15 @@ If you are working alone, you are still the maintainer. That just means you are 
 ## Pull requests
 
 - Contributors open pull requests with the included template.
-- `repo-health.yml` can run low-risk checks like `check-docs` in pull requests without any API keys.
-- Codex can review pull requests automatically through built-in GitHub review or the included `codex-pr-review.yml` example.
+- If `repo-health.yml` exists, it can run low-risk checks like `check-docs` in pull requests without any API keys.
+- If `codex-pr-review.yml` exists, Codex can review pull requests automatically through that workflow or through built-in GitHub review.
 - Maintainers should focus first on correctness, user impact, tests, and documentation clarity.
 
 ## Releases
 
 - Ignore release automation until you actually need releases.
-- When you are ready, `codex-release-prep.yml` can generate a draft summary and checklist from recent commits.
-- If `.github/release-note-schema.yml` exists, the same workflow can also emit a structured YAML block for other tooling.
+- If `codex-release-prep.yml` exists, it can generate a draft summary and checklist from recent commits.
+- If `.github/release-note-schema.yml` also exists, the same workflow can emit a structured YAML block for other tooling.
 - Review generated notes before publishing them.
 
 ## Repository instructions

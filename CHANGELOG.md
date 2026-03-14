@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.12.0 - 2026-03-15
+
+- add `--bundle` support so users can choose `preset-default`, `core`, `checks`, or `full` advanced-file output during scaffolding
+- update generated docs so optional files are described correctly when lighter bundles are used
+- document bundle selection in plain English for first-time maintainers
+
 ## 0.11.0 - 2026-03-15
 
 - add editable `ci-smoke.yml` workflow starters to the `nextjs-app` and `python-service` presets

@@ -95,6 +95,7 @@ async function main() {
   const maintainerName = args.maintainerName ?? "Project Owner";
 
   const result = await initKit({
+    bundle: args.bundle,
     dryRun: args.dryRun,
     force: args.force,
     maintainerName,
@@ -108,6 +109,7 @@ async function main() {
     `${args.dryRun ? "Previewed" : "Initialized"} OSS Maintainer Kit in ${targetDir}`,
   );
   console.log(`Preset: ${args.preset}`);
+  console.log(`Bundle: ${args.bundle}`);
   console.log(`${args.dryRun ? "Would write" : "Written"}: ${result.created.length}`);
   console.log(`Create: ${result.toCreate.length}`);
   console.log(`Update: ${result.toUpdate.length}`);

@@ -23,14 +23,14 @@ If you are working alone, you are still the maintainer. That just means you are 
 
 - Pull requests are where code changes should be explained, checked, and reviewed.
 - The pull request template asks for three things: what changed, why it matters, and how it was checked.
-- Codex can review pull requests through built-in GitHub review or the optional `codex-pr-review.yml` workflow.
+- If `codex-pr-review.yml` exists, Codex can review pull requests through that workflow or through built-in GitHub review.
 - Review should focus on bugs, risky behavior changes, missing tests, and confusing docs before style nits.
 
 ## Releases
 
 - You can ignore releases entirely until people are actually using tagged versions of your project.
-- When you are ready, `codex-release-prep.yml` can draft a summary and a checklist from recent commits.
-- If `.github/release-note-schema.yml` exists, the same workflow can also emit a structured YAML block for other tooling.
+- If `codex-release-prep.yml` exists, it can draft a summary and a checklist from recent commits.
+- If `.github/release-note-schema.yml` also exists, the same workflow can emit a structured YAML block for other tooling.
 - Always review generated release notes before publishing anything.
 
 ## Repository instructions

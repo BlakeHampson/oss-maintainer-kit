@@ -10,21 +10,27 @@ If you are working alone, you are still the maintainer. In this context, that ju
 
 1. Read `AGENTS.md`.
 2. Keep the issue and pull request templates unless they are clearly wrong for your repo.
-3. Ignore `.github/workflows/codex-release-prep.yml` until you actually ship versions.
-4. Delete `.github/release-note-schema.yml` unless you want release prep output in structured YAML as well as Markdown.
+3. If `.github/workflows/codex-release-prep.yml` exists, ignore it until you actually ship versions.
+4. If `.github/release-note-schema.yml` exists, delete it unless you want release prep output in structured YAML as well as Markdown.
 5. Add `OPENAI_API_KEY` only if you want the optional Codex GitHub Actions.
 6. Make one small pull request to yourself and see how the flow feels.
 
-## What each generated file is for
+## Core files you should expect
 
 - `AGENTS.md`: tells Codex and human contributors what good changes look like in the repo
 - `.github/PULL_REQUEST_TEMPLATE.md`: asks contributors to explain what changed, why it matters, and how they checked it
 - `.github/ISSUE_TEMPLATE/bug_report.yml`: helps someone report a bug without leaving out the important details
 - `.github/ISSUE_TEMPLATE/feature_request.yml`: helps someone describe a useful improvement without writing a full spec
-- `.github/release-note-schema.yml`: optional schema for teams that want machine-readable release prep output
+- `docs/MAINTAINER_WORKFLOW.md`: plain-English explanation of how this repo handles issues, pull requests, and releases
+
+## Optional advanced files you may also see
+
+Which of these files appear depends on the preset and `--bundle` option you used during scaffolding.
+
+- `.github/workflows/repo-health.yml`: optional GitHub Action that runs low-risk checks like `check-docs`
 - `.github/workflows/codex-pr-review.yml`: optional GitHub Action that asks Codex to review pull requests
 - `.github/workflows/codex-release-prep.yml`: optional GitHub Action that drafts release prep notes
-- `docs/MAINTAINER_WORKFLOW.md`: plain-English explanation of how this repo handles issues, pull requests, and releases
+- `.github/release-note-schema.yml`: optional schema for teams that want machine-readable release prep output
 
 ## Safe defaults
 

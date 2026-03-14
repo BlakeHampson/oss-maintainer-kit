@@ -17,6 +17,8 @@ test("parseCliArgs handles init flags", () => {
     "Jane Doe",
     "--preset",
     "first-public-repo",
+    "--bundle",
+    "core",
     "--diff",
     "--force",
   ]);
@@ -26,6 +28,7 @@ test("parseCliArgs handles init flags", () => {
   assert.equal(parsed.repoName, "demo-repo");
   assert.equal(parsed.maintainerName, "Jane Doe");
   assert.equal(parsed.preset, "first-public-repo");
+  assert.equal(parsed.bundle, "core");
   assert.equal(parsed.diff, true);
   assert.equal(parsed.force, true);
 });
@@ -63,6 +66,8 @@ test("collectAnchors handles duplicate headings", () => {
 test("usage and explainKit describe the beginner path", () => {
   assert.match(usage(), /maintainer-kit explain/);
   assert.match(usage(), /first-public-repo/);
+  assert.match(usage(), /preset-default/);
+  assert.match(usage(), /core: Keeps onboarding files and templates/i);
   assert.match(usage(), /javascript-library/);
   assert.match(usage(), /python-package/);
   assert.match(usage(), /nextjs-app/);
@@ -70,6 +75,7 @@ test("usage and explainKit describe the beginner path", () => {
   assert.match(usage(), /docs-heavy/);
   assert.match(usage(), /security-sensitive-repo/);
   assert.match(usage(), /sync-labels/);
+  assert.match(explainKit(), /bundle/i);
   assert.match(explainKit(), /docs\/START_HERE\.md/);
 });
 
@@ -175,6 +181,63 @@ test("first-public-repo preset leaves out the release workflow", async () => {
   assert.ok(result.created.includes(".github/workflows/repo-health.yml"));
   assert.ok(!result.created.includes(".github/release-note-schema.yml"));
   assert.ok(!result.created.includes(".github/workflows/codex-release-prep.yml"));
+});
+
+test("core bundle leaves out optional advanced files", async () => {
+  const targetDir = await mkdtemp(path.join(os.tmpdir(), "oss-maintainer-kit-"));
+  const previewTarget = path.join(targetDir, "preview-repo");
+
+  const result = await initKit({
+    bundle: "core",
+    dryRun: true,
+    maintainerName: "Jane Doe",
+    repoName: "demo-repo",
+    targetDir: previewTarget,
+  });
+
+  assert.ok(result.created.includes("AGENTS.md"));
+  assert.ok(!result.created.includes(".github/workflows/repo-health.yml"));
+  assert.ok(!result.created.includes(".github/workflows/codex-pr-review.yml"));
+  assert.ok(!result.created.includes(".github/workflows/codex-release-prep.yml"));
+  assert.ok(!result.created.includes(".github/release-note-schema.yml"));
+});
+
+test("checks bundle keeps low-risk checks for app presets", async () => {
+  const targetDir = await mkdtemp(path.join(os.tmpdir(), "oss-maintainer-kit-"));
+  const previewTarget = path.join(targetDir, "preview-repo");
+
+  const result = await initKit({
+    bundle: "checks",
+    dryRun: true,
+    maintainerName: "Jane Doe",
+    preset: "nextjs-app",
+    repoName: "demo-repo",
+    targetDir: previewTarget,
+  });
+
+  assert.ok(result.created.includes(".github/workflows/repo-health.yml"));
+  assert.ok(result.created.includes(".github/workflows/ci-smoke.yml"));
+  assert.ok(!result.created.includes(".github/workflows/codex-pr-review.yml"));
+  assert.ok(!result.created.includes(".github/workflows/codex-release-prep.yml"));
+  assert.ok(!result.created.includes(".github/release-note-schema.yml"));
+});
+
+test("full bundle can override lighter preset defaults", async () => {
+  const targetDir = await mkdtemp(path.join(os.tmpdir(), "oss-maintainer-kit-"));
+  const previewTarget = path.join(targetDir, "preview-repo");
+
+  const result = await initKit({
+    bundle: "full",
+    dryRun: true,
+    maintainerName: "Jane Doe",
+    preset: "first-public-repo",
+    repoName: "demo-repo",
+    targetDir: previewTarget,
+  });
+
+  assert.ok(result.created.includes(".github/workflows/codex-pr-review.yml"));
+  assert.ok(result.created.includes(".github/workflows/codex-release-prep.yml"));
+  assert.ok(result.created.includes(".github/release-note-schema.yml"));
 });
 
 test("javascript-library preset injects package-specific review guidance", async () => {
