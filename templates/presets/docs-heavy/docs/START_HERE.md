@@ -12,6 +12,7 @@ It assumes your biggest maintenance risk is confusion: outdated instructions, br
 4. Decide how you want to verify links, examples, screenshots, and generated docs.
 5. Add `OPENAI_API_KEY` only if you want the optional Codex GitHub Actions.
 6. Run `oss-maintainer-kit check-docs .` after doc edits to catch broken local links and anchors.
+7. Keep `.github/workflows/repo-health.yml` if you want that docs check to run in pull requests too.
 
 ## What to pay extra attention to
 

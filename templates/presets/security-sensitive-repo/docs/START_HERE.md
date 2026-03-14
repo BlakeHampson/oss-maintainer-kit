@@ -26,6 +26,8 @@ If the answer is anything except docs-only, treat it as a higher-risk change and
 
 After doc edits, run `oss-maintainer-kit check-docs .` to catch broken local Markdown links and anchors before you merge.
 
+If the repo uses pull requests heavily, keep `.github/workflows/repo-health.yml` so that doc and navigation drift is caught in CI without introducing API-key-based automation.
+
 ## Safe defaults
 
 - Prefer precise claims over broad security language.

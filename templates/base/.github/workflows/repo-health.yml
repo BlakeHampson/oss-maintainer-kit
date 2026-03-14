@@ -1,0 +1,27 @@
+# Optional workflow:
+# - Runs low-risk repository checks in pull requests
+# - Good fit for docs-heavy or security-sensitive repos
+# - Remove it if the repository has almost no Markdown or you prefer a different CI path
+name: Repository health
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  docs_check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 20
+
+      - name: Check local docs links and anchors
+        run: npx --yes oss-maintainer-kit@latest check-docs .

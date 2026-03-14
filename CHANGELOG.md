@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.0 - 2026-03-14
+
+- add a `repo-health` workflow template that runs low-risk checks like `check-docs` in pull requests
+- enable the new workflow in public example repos so it is demonstrated, not just documented
+- update the main README so optional workflows and docs checks are easier to understand
+
 ## 0.5.0 - 2026-03-14
 
 - add a `check-docs` command to catch broken local Markdown links and anchors

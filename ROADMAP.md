@@ -11,7 +11,6 @@
 ## Next up
 
 - Add a dry-run diff mode so maintainers can preview generated changes.
-- Add a `repo-health` workflow template that runs checks like `check-docs` in pull requests.
 - Add more presets for app frameworks and deployment targets.
 - Add richer social-preview and README assets for each public example repository.
 - Add a release-note schema option for teams that want structured outputs.

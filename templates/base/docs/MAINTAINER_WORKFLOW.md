@@ -22,6 +22,7 @@ If you are working alone, you are still the maintainer. That just means you are 
 ## Pull requests
 
 - Contributors open pull requests with the included template.
+- `repo-health.yml` can run low-risk checks like `check-docs` in pull requests without any API keys.
 - Codex can review pull requests automatically through built-in GitHub review or the included `codex-pr-review.yml` example.
 - Maintainers should focus first on correctness, user impact, tests, and documentation clarity.
 

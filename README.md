@@ -23,8 +23,10 @@ It ships with a tiny CLI and a practical starter pack:
 - `AGENTS.md` guidance that helps AI reviews fit your repo
 - `docs/START_HERE.md` so a new repo owner knows what to do first
 - GitHub issue and pull request templates
+- an optional repo-health workflow that runs low-risk checks like `check-docs`
 - example Codex GitHub Action workflows for pull request review and release prep
 - a repeatable label sync command for first-pass GitHub triage labels
+- a local docs check command for broken Markdown links and anchors
 - plain-English workflow documentation you can drop into a new or existing repository
 
 ## What this solves
@@ -46,6 +48,7 @@ OSS Maintainer Kit gives you the minimum useful structure without forcing a gian
 | `AGENTS.md` | Tells Codex and contributors what good changes look like in your repo. | Yes |
 | `.github/ISSUE_TEMPLATE/*` | Turns vague bug reports and ideas into something you can act on. | Yes |
 | `.github/PULL_REQUEST_TEMPLATE.md` | Helps contributors explain what changed and how they checked it. | Yes |
+| `.github/workflows/repo-health.yml` | Optional GitHub Action that runs low-risk checks like `check-docs` in pull requests. | Often yes, especially for docs-heavy or security-sensitive repos |
 | `.github/workflows/codex-pr-review.yml` | Optional GitHub Action that asks Codex to review pull requests. | Later if you want AI review in Actions |
 | `.github/workflows/codex-release-prep.yml` | Optional GitHub Action that drafts release prep notes. | Later, once you actually ship versions |
 | `docs/MAINTAINER_WORKFLOW.md` | Explains how issues, pull requests, and releases are handled. | Helpful, but not urgent |
@@ -128,14 +131,15 @@ That split is intentional. The same kit should be useful for a beginner opening 
 
 More detail: [docs/CASE_STUDY_SHULEDOCS.md](docs/CASE_STUDY_SHULEDOCS.md)
 
-## Optional AI workflows
+## Optional workflows
 
-The included GitHub Actions are based on OpenAI's official docs and the `openai/codex-action` repository. They are optional:
+The included GitHub Actions and workflow templates are optional:
 
+- `repo-health.yml` runs low-risk checks like `check-docs` in pull requests and does not require API keys
 - `codex-pr-review.yml` posts a Codex review comment on pull requests
 - `codex-release-prep.yml` drafts a release summary and checklist
 
-They are intentionally conservative and require an `OPENAI_API_KEY` GitHub secret.
+The Codex workflows are intentionally conservative and require an `OPENAI_API_KEY` GitHub secret.
 
 If you already use built-in Codex GitHub reviews, you may not want the pull request workflow as well, because it can create duplicate feedback.
 
@@ -207,6 +211,7 @@ Run tests:
 
 ```bash
 npm test
+npm run docs:check
 ```
 
 Smoke check the CLI:

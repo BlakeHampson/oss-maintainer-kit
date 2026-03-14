@@ -149,6 +149,7 @@ test("first-public-repo preset leaves out the release workflow", async () => {
   });
 
   assert.ok(result.created.includes(".github/workflows/codex-pr-review.yml"));
+  assert.ok(result.created.includes(".github/workflows/repo-health.yml"));
   assert.ok(!result.created.includes(".github/workflows/codex-release-prep.yml"));
 });
 
@@ -224,10 +225,15 @@ test("security-sensitive-repo preset excludes automation workflows and injects s
     path.join(targetDir, ".github", "PULL_REQUEST_TEMPLATE.md"),
     "utf8",
   );
+  const workflow = await readFile(
+    path.join(targetDir, ".github", "workflows", "repo-health.yml"),
+    "utf8",
+  );
 
   assert.match(agents, /security-sensitive/);
   assert.match(agents, /trust boundaries/);
   assert.match(prTemplate, /auth, secret, or crypto behavior/);
+  assert.match(workflow, /check-docs/);
 });
 
 test("checkDocs reports missing files and anchors", async () => {
