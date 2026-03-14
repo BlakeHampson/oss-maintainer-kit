@@ -161,6 +161,8 @@ The included GitHub Actions and workflow templates are optional:
 
 The app-oriented `ci-smoke.yml` templates are intentionally simple. They are starting points, not full pipelines, and should be edited to match your package manager, test runner, and critical flow. Today they auto-detect npm, pnpm, or yarn starters for app repos, and `uv`, `requirements.txt`, or editable `pyproject.toml` starters for Python service repos.
 
+If you want concrete `SMOKE_COMMAND` examples instead of a blank starting point, see [docs/SMOKE_COMMANDS.md](docs/SMOKE_COMMANDS.md).
+
 The Codex workflows are intentionally conservative and require an `OPENAI_API_KEY` GitHub secret.
 
 If you already use built-in Codex GitHub reviews, you may not want the pull request workflow as well, because it can create duplicate feedback.

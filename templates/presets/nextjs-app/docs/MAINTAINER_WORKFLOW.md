@@ -17,6 +17,7 @@ That means maintainers should care about user-visible behavior, deploy safety, a
 - Ask for screenshots or a short demo for visible UI or navigation changes.
 - If `repo-health.yml` exists, it can catch documentation drift, but it does not replace route, build, or smoke checks.
 - If `ci-smoke.yml` exists, treat it as a starting point, not framework magic. It can auto-detect npm, pnpm, or yarn starter commands, but you should still keep them honest for your package manager and critical flow.
+- If you need a first draft for `SMOKE_COMMAND`, start from `docs/SMOKE_COMMANDS.md` and then narrow it to the one route or flow that matters most.
 - Keep `docs/DEPLOYMENT.md` and `docs/ARCHITECTURE.md` updated when deploy paths or system boundaries change.
 
 ## Releases and deploys

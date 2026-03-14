@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.15.0 - 2026-03-15
+
+- add `docs/SMOKE_COMMANDS.md` with concrete starter patterns for Next.js and Python service smoke checks
+- scaffold preset-specific `docs/SMOKE_COMMANDS.md` files into `nextjs-app` and `python-service` repos
+- link the smoke-command cookbook from the README and the app-oriented preset docs
+
 ## 0.14.0 - 2026-03-15
 
 - make the app smoke workflow starter auto-detect npm, pnpm, or yarn defaults from common repo hints

@@ -314,6 +314,10 @@ test("nextjs-app preset injects app and deploy guidance", async () => {
     path.join(targetDir, ".github", "workflows", "ci-smoke.yml"),
     "utf8",
   );
+  const smokeCommands = await readFile(
+    path.join(targetDir, "docs", "SMOKE_COMMANDS.md"),
+    "utf8",
+  );
   const architecture = await readFile(
     path.join(targetDir, "docs", "ARCHITECTURE.md"),
     "utf8",
@@ -327,6 +331,7 @@ test("nextjs-app preset injects app and deploy guidance", async () => {
   assert.match(agents, /NEXT_PUBLIC_/);
   assert.match(startHere, /production build/);
   assert.match(startHere, /ci-smoke\.yml/);
+  assert.match(startHere, /docs\/SMOKE_COMMANDS\.md/);
   assert.match(startHere, /npm, pnpm, or yarn/);
   assert.match(smokeWorkflow, /pnpm-lock\.yaml/);
   assert.match(smokeWorkflow, /yarn\.lock/);
@@ -334,6 +339,8 @@ test("nextjs-app preset injects app and deploy guidance", async () => {
   assert.match(smokeWorkflow, /corepack enable/);
   assert.match(smokeWorkflow, /Detected starter defaults for:/);
   assert.match(smokeWorkflow, /SMOKE_COMMAND is empty/);
+  assert.match(smokeCommands, /npm run smoke:home/);
+  assert.match(smokeCommands, /curl -fsS http:\/\/127\.0\.0\.1:3000\/api\/health/);
   assert.match(deployment, /rollback/);
   assert.match(architecture, /server components versus client components/);
   assert.match(appSurface, /critical user flows/);
@@ -366,6 +373,10 @@ test("python-service preset injects service and deploy guidance", async () => {
     path.join(targetDir, ".github", "workflows", "ci-smoke.yml"),
     "utf8",
   );
+  const smokeCommands = await readFile(
+    path.join(targetDir, "docs", "SMOKE_COMMANDS.md"),
+    "utf8",
+  );
   const architecture = await readFile(
     path.join(targetDir, "docs", "ARCHITECTURE.md"),
     "utf8",
@@ -380,11 +391,14 @@ test("python-service preset injects service and deploy guidance", async () => {
   assert.match(workflow, /smoke test plan/);
   assert.match(workflow, /ci-smoke\.yml/);
   assert.match(startHere, /uv/);
+  assert.match(startHere, /docs\/SMOKE_COMMANDS\.md/);
   assert.match(smokeWorkflow, /uv\.lock/);
   assert.match(smokeWorkflow, /requirements-dev\.txt/);
   assert.match(smokeWorkflow, /uv run pytest/);
   assert.match(smokeWorkflow, /Detected starter defaults for:/);
   assert.match(smokeWorkflow, /SMOKE_COMMAND is empty/);
+  assert.match(smokeCommands, /python -m service\.smoke_check/);
+  assert.match(smokeCommands, /curl -fsS http:\/\/127\.0\.0\.1:8000\/healthz/);
   assert.match(runbook, /dashboards, logs, and alerts/);
   assert.match(architecture, /data stores, queues, and external services/);
   assert.match(serviceSurface, /operationally critical/);
