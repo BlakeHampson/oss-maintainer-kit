@@ -16,6 +16,7 @@ That means maintainers should care about deploy behavior, runtime compatibility,
 - If a change touches config, schema, runtime entry points, deploy behavior, or external integrations, require validation notes in the PR.
 - Ask for a smoke test plan for endpoint, worker, or migration changes.
 - `repo-health.yml` can catch docs drift, but it does not replace service tests, migration checks, or deploy validation.
+- Keep `docs/RUNBOOK.md` and `docs/ARCHITECTURE.md` updated when service boundaries or recovery steps change.
 
 ## Releases and deploys
 

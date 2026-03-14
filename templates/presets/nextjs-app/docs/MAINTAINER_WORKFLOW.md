@@ -16,6 +16,7 @@ That means maintainers should care about user-visible behavior, deploy safety, a
 - If a change touches routing, auth, rendering mode, middleware, or env vars, require validation notes in the PR.
 - Ask for screenshots or a short demo for visible UI or navigation changes.
 - `repo-health.yml` can catch documentation drift, but it does not replace route, build, or smoke checks.
+- Keep `docs/DEPLOYMENT.md` and `docs/ARCHITECTURE.md` updated when deploy paths or system boundaries change.
 
 ## Releases and deploys
 

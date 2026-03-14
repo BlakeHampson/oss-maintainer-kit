@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.10.0 - 2026-03-15
+
+- add deployment and architecture stubs to the `nextjs-app` preset
+- add runbook and architecture stubs to the `python-service` preset
+- align the app-oriented presets with the public example repos that already demonstrated those docs
+
 ## 0.9.0 - 2026-03-15
 
 - add an optional `.github/release-note-schema.yml` scaffold for teams that want machine-readable release prep
