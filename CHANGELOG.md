@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.13.0 - 2026-03-15
+
+- add `docs/BUNDLES.md` with a side-by-side comparison of `core`, `checks`, `preset-default`, and `full`
+- add a beginner-friendly bundle chooser table to the README
+- document a concrete `nextjs-app` example so users can understand what `checks` adds over `core`
+
 ## 0.12.0 - 2026-03-15
 
 - add `--bundle` support so users can choose `preset-default`, `core`, `checks`, or `full` advanced-file output during scaffolding

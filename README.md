@@ -178,6 +178,15 @@ Available bundle profiles:
 - `checks`: keep low-risk checks like `repo-health.yml` and `ci-smoke.yml` when the preset supports them, but skip Codex automation and release schemas
 - `full`: include every optional advanced file the preset can supply, even if the preset is normally lighter by default
 
+Quick chooser:
+
+| If you want... | Use... |
+| --- | --- |
+| the smallest beginner-friendly setup | `--bundle core` |
+| docs and smoke checks, but no Codex or release automation | `--bundle checks` |
+| the preset's built-in default behavior | `--bundle preset-default` |
+| every optional advanced file the preset can supply | `--bundle full` |
+
 Examples:
 
 ```bash
@@ -187,6 +196,8 @@ npx oss-maintainer-kit init ../my-repo --preset security-sensitive-repo --bundle
 ```
 
 `--dry-run --diff` works the same way with bundle selection. It previews exactly which optional files would appear or disappear before you write anything.
+
+For the side-by-side file matrix and a concrete `nextjs-app` comparison, see [docs/BUNDLES.md](docs/BUNDLES.md).
 
 ## Presets
 

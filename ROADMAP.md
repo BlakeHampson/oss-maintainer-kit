@@ -11,10 +11,11 @@
 - lightweight deployment, runbook, and architecture stubs for the app-oriented presets
 - lightweight CI smoke-test templates for the app-oriented presets
 - bundle profiles for scaffolding only the advanced files a team actually wants
+- bundle-comparison docs for choosing between `core`, `checks`, `preset-default`, and `full`
 - public case study derived from the `ShuleDocs` adoption work
 - `check-docs` for local Markdown link and anchor validation
 
 ## Next up
 
 - Add more presets for deployment targets and common stack conventions.
-- Add bundle-aware example repos or docs so users can see `core`, `checks`, and `full` output without trial and error.
+- Add stack-aware variants for package-manager and runtime defaults in the smoke workflow starters.
