@@ -45,3 +45,5 @@ Which of these files appear depends on the preset and `--bundle` option you used
 - Simplify template wording if your contributors are likely to be new to GitHub too.
 - Remove any workflow you do not expect to use in the next two weeks.
 - Keep `release-note-schema.yml` only if you want release prep that can feed another automation step.
+
+QA note: this line exists only to trigger a safe Codex workflow smoke test.
