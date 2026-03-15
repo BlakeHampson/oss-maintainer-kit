@@ -650,3 +650,23 @@ test("first-public-repo docs stay accurate for the core bundle", async () => {
   assert.match(startHere, /if this file is present/i);
   assert.match(workflow, /if your scaffold includes it/);
 });
+
+test("release prep workflow does not pass removed Codex CLI flags", async () => {
+  const targetDir = await mkdtemp(path.join(os.tmpdir(), "oss-maintainer-kit-"));
+
+  await initKit({
+    bundle: "full",
+    maintainerName: "Jane Doe",
+    preset: "first-public-repo",
+    repoName: "demo-repo",
+    targetDir,
+  });
+
+  const workflow = await readFile(
+    path.join(targetDir, ".github", "workflows", "codex-release-prep.yml"),
+    "utf8",
+  );
+
+  assert.doesNotMatch(workflow, /codex-args:/);
+  assert.match(workflow, /output-file: release-plan\.md/);
+});
