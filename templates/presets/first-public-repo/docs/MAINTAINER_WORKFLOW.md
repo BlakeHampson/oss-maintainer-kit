@@ -21,7 +21,7 @@ If you are working alone, you are still the maintainer. That just means you are 
 ## Pull requests
 
 - Contributors open pull requests with the included template.
-- Codex can review pull requests automatically through built-in GitHub review or the included `codex-pr-review.yml` example.
+- Codex can review pull requests automatically through built-in GitHub review or, if your scaffold includes it, the `codex-pr-review.yml` example.
 - Reviews should focus first on correctness, user impact, tests, and documentation clarity.
 
 ## When to add release workflow

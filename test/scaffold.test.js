@@ -566,3 +566,87 @@ test("checkDocs reports missing files and anchors", async () => {
     /Anchor "#also-missing" does not exist in this file/,
   );
 });
+
+test("checkDocs ignores virtualenv and cache directories", async () => {
+  const targetDir = await mkdtemp(path.join(os.tmpdir(), "oss-maintainer-kit-docs-"));
+
+  await mkdir(path.join(targetDir, ".venv", "lib", "pkg"), { recursive: true });
+  await mkdir(path.join(targetDir, "venv", "lib", "pkg"), { recursive: true });
+
+  await writeFile(path.join(targetDir, "README.md"), "# Demo\n", "utf8");
+  await writeFile(
+    path.join(targetDir, ".venv", "lib", "pkg", "README.md"),
+    "# Vendored\n\n[Broken](missing.md)\n",
+    "utf8",
+  );
+  await writeFile(
+    path.join(targetDir, "venv", "lib", "pkg", "README.md"),
+    "# Vendored\n\n[Broken](missing.md)\n",
+    "utf8",
+  );
+
+  const result = await checkDocs({ rootDir: targetDir });
+
+  assert.equal(result.filesChecked, 1);
+  assert.equal(result.issues.length, 0);
+});
+
+test("checkDocs supports inline link titles", async () => {
+  const targetDir = await mkdtemp(path.join(os.tmpdir(), "oss-maintainer-kit-docs-"));
+  const docsDir = path.join(targetDir, "docs");
+
+  await mkdir(docsDir, { recursive: true });
+  await writeFile(
+    path.join(targetDir, "README.md"),
+    '# Demo\n\n[Working](docs/good.md "Good doc")\n',
+    "utf8",
+  );
+  await writeFile(path.join(docsDir, "good.md"), "# Good\n", "utf8");
+
+  const result = await checkDocs({ rootDir: targetDir });
+
+  assert.equal(result.issues.length, 0);
+});
+
+test("checkDocs supports link targets with parentheses", async () => {
+  const targetDir = await mkdtemp(path.join(os.tmpdir(), "oss-maintainer-kit-docs-"));
+  const docsDir = path.join(targetDir, "docs (draft)");
+
+  await mkdir(docsDir, { recursive: true });
+  await writeFile(
+    path.join(targetDir, "README.md"),
+    "# Demo\n\n[Working](docs%20(draft)/good.md)\n",
+    "utf8",
+  );
+  await writeFile(path.join(docsDir, "good.md"), "# Good\n", "utf8");
+
+  const result = await checkDocs({ rootDir: targetDir });
+
+  assert.equal(result.issues.length, 0);
+});
+
+test("first-public-repo docs stay accurate for the core bundle", async () => {
+  const targetDir = await mkdtemp(path.join(os.tmpdir(), "oss-maintainer-kit-"));
+
+  await initKit({
+    bundle: "core",
+    maintainerName: "Jane Doe",
+    preset: "first-public-repo",
+    repoName: "demo-repo",
+    targetDir,
+  });
+
+  const startHere = await readFile(
+    path.join(targetDir, "docs", "START_HERE.md"),
+    "utf8",
+  );
+  const workflow = await readFile(
+    path.join(targetDir, "docs", "MAINTAINER_WORKFLOW.md"),
+    "utf8",
+  );
+
+  assert.doesNotMatch(startHere, /You get .* optional PR review workflow/);
+  assert.match(startHere, /Depending on the bundle you chose/);
+  assert.match(startHere, /if this file is present/i);
+  assert.match(workflow, /if your scaffold includes it/);
+});

@@ -7,6 +7,17 @@ const ignoredDirectories = new Set([
   "dist",
   "out",
   "coverage",
+  ".venv",
+  "venv",
+  "env",
+  "__pycache__",
+  ".pytest_cache",
+  ".mypy_cache",
+  ".ruff_cache",
+  ".tox",
+  ".next",
+  ".turbo",
+  ".cache",
 ]);
 
 function countLineAtIndex(content, index) {
@@ -78,16 +89,143 @@ export function collectAnchors(markdown) {
 
 export function collectMarkdownLinks(markdown) {
   const links = [];
-  const pattern = /!?\[[^\]]*]\(([^)]+)\)/g;
+  const pattern = /!?\[[^\]]*]\(/g;
+  let match;
 
-  for (const match of markdown.matchAll(pattern)) {
+  while ((match = pattern.exec(markdown)) !== null) {
+    const openParenIndex = (match.index ?? 0) + match[0].length - 1;
+    const parsed = readInlineLink(markdown, openParenIndex);
+
+    if (!parsed) {
+      continue;
+    }
+
     links.push({
       line: countLineAtIndex(markdown, match.index ?? 0),
-      target: match[1],
+      target: parsed.target,
     });
   }
 
   return links;
+}
+
+function extractInlineLinkTarget(rawTarget) {
+  const trimmed = rawTarget.trim();
+
+  if (!trimmed) {
+    return "";
+  }
+
+  if (trimmed.startsWith("<")) {
+    const closingIndex = trimmed.indexOf(">");
+    return closingIndex === -1 ? trimmed : trimmed.slice(1, closingIndex);
+  }
+
+  let depth = 0;
+  let escaped = false;
+  let target = "";
+
+  for (const character of trimmed) {
+    if (escaped) {
+      target += character;
+      escaped = false;
+      continue;
+    }
+
+    if (character === "\\") {
+      target += character;
+      escaped = true;
+      continue;
+    }
+
+    if (/\s/.test(character) && depth === 0) {
+      break;
+    }
+
+    if (character === "(") {
+      depth += 1;
+    } else if (character === ")" && depth > 0) {
+      depth -= 1;
+    }
+
+    target += character;
+  }
+
+  return target;
+}
+
+function readInlineLink(markdown, openParenIndex) {
+  let depth = 0;
+  let escaped = false;
+  let inAngle = false;
+  let quote = null;
+  let rawTarget = "";
+
+  for (let index = openParenIndex + 1; index < markdown.length; index += 1) {
+    const character = markdown[index];
+
+    if (escaped) {
+      rawTarget += character;
+      escaped = false;
+      continue;
+    }
+
+    if (character === "\\") {
+      rawTarget += character;
+      escaped = true;
+      continue;
+    }
+
+    if (quote !== null) {
+      rawTarget += character;
+      if (character === quote) {
+        quote = null;
+      }
+      continue;
+    }
+
+    if (inAngle) {
+      rawTarget += character;
+      if (character === ">") {
+        inAngle = false;
+      }
+      continue;
+    }
+
+    if (character === "<" && rawTarget.trim() === "") {
+      rawTarget += character;
+      inAngle = true;
+      continue;
+    }
+
+    if (character === "\"" || character === "'") {
+      rawTarget += character;
+      quote = character;
+      continue;
+    }
+
+    if (character === "(") {
+      rawTarget += character;
+      depth += 1;
+      continue;
+    }
+
+    if (character === ")") {
+      if (depth === 0) {
+        return {
+          target: extractInlineLinkTarget(rawTarget),
+        };
+      }
+
+      rawTarget += character;
+      depth -= 1;
+      continue;
+    }
+
+    rawTarget += character;
+  }
+
+  return null;
 }
 
 async function pathExists(targetPath) {

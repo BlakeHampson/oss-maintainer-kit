@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.16.1 - 2026-03-15
+
+- make `check-docs` ignore common local virtualenv and cache directories so healthy repos do not fail on vendored README files
+- make `check-docs` handle normal inline Markdown link titles and link targets with parentheses
+- make the `first-public-repo` docs stay accurate when lighter bundles omit optional Codex workflows
+
 ## 0.16.0 - 2026-03-15
 
 - group `init --dry-run` preview output into core files versus optional advanced files
