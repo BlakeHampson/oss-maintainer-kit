@@ -73,7 +73,6 @@ jobs:
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           prompt-file: release-prompt.txt
-          codex-args: '["--quiet"]'
           output-file: release-plan.md
 
       - name: Upload release plan

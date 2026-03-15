@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.16.2 - 2026-03-15
+
+- remove the incompatible `--quiet` Codex CLI flag from the release-prep GitHub Actions template
+- add regression coverage so scaffolded release-prep workflows keep matching the current Codex action contract
+
 ## 0.16.1 - 2026-03-15
 
 - make `check-docs` ignore common local virtualenv and cache directories so healthy repos do not fail on vendored README files
